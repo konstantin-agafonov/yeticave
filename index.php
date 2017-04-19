@@ -1,8 +1,18 @@
 <?php
-$is_auth = (bool) rand(0, 1);
+// устанавливаем часовой пояс в Московское время
+date_default_timezone_set('Europe/Moscow');
 
-$user_name = 'Константин';
-$user_avatar = 'img/user.jpg';
+// записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
+$lot_time_remaining = "00:00";
+
+// временная метка для полночи следующего дня
+$tomorrow = strtotime('tomorrow midnight');
+
+// временная метка для настоящего времени
+$now = time();
+
+// далее нужно вычислить оставшееся время до начала следующих суток и записать его в переменную $lot_time_remaining
+// ...
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -27,26 +37,13 @@ $user_avatar = 'img/user.jpg';
         <a class="main-header__add-lot button" href="add-lot.html">Добавить лот</a>
 
         <nav class="user-menu">
-
-        <!-- здесь должен быть PHP код для показа аватара пользователя -->
-        <?php if ($is_auth): ?>
             <div class="user-menu__image">
-                <img src="<?php echo $user_avatar; ?>" width="40" height="40" alt="Пользователь">
+                <img src="img/user.jpg" width="40" height="40" alt="Пользователь">
             </div>
             <div class="user-menu__logged">
-                <p><?php echo $user_name; ?></p>
+                <p>Константин</p>
+                <a href="#">Выйти</a>
             </div>
-        <?php else: ?>
-            <ul class="user-menu__list">
-                <li class="user-menu__item">
-                    <a href="#">Регистрация</a>
-                </li>
-                <li class="user-menu__item">
-                    <a href="#">Вход</a>
-                </li>
-            </ul>
-        <?php endif; ?>
-
         </nav>
     </div>
 </header>
@@ -81,12 +78,6 @@ $user_avatar = 'img/user.jpg';
             <h2>Открытые лоты</h2>
             <select class="lots__select">
                 <option>Все категории</option>
-                <option>Доски и лыжи</option>
-                <option>Крепления</option>
-                <option>Ботинки</option>
-                <option>Одежда</option>
-                <option>Инструменты</option>
-                <option>Разное</option>
             </select>
         </div>
         <ul class="lots__list">
@@ -96,14 +87,14 @@ $user_avatar = 'img/user.jpg';
                 </div>
                 <div class="lot__info">
                     <span class="lot__category">Доски и лыжи</span>
-                    <h3 class="lot__title"><a class="text-link" href="lot.html">2014 Rossignol District Snowboard</a></h3>
+                    <h3 class="lot__title"><a class="text-link" href="">2014 Rossignol District Snowboard</a></h3>
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
                             <span class="lot__cost">10 999<b class="rub">р</b></span>
                         </div>
                         <div class="lot__timer timer">
-                            16:54:12
+                            <?=$lot_time_remaining;?>
                         </div>
                     </div>
                 </div>

@@ -16,7 +16,7 @@ $lot_time_remaining = date("H:i", $tomorrow + ($tomorrow - $now));
 
 $categories = ['Доски и лыжи', 'Крепления', 'Ботинки', 'Одежда', 'Инструменты', 'Разное'];
 
-$messages = [
+$lots = [
     [
         'name' => '2014 Rossignol District Snowboard',
         'category' => 0,
@@ -119,25 +119,25 @@ $messages = [
             <h2>Открытые лоты</h2>
             <select class="lots__select">
                 <option>Все категории</option>
-                <?php foreach ($categories as $index => $category) {
-                    echo '<option value="' . $index . '">' . $category . '</option>';
-                }; ?>
+                <?php foreach ($categories as $index => $category): ?>
+                    <option value="<?=$index;?>"><?=$category;?></option>
+                <?php endforeach; ?>
             </select>
         </div>
         <ul class="lots__list">
             
-            <?php foreach ($messages as $message) : ?>
+            <?php foreach ($lots as $lot): ?>
                 <li class="lots__item lot">
                     <div class="lot__image">
-                        <img src="<?=$message['pic'];?>" width="350" height="260" alt="<?=$message['name'];?>">
+                        <img src="<?=$lot['pic'];?>" width="350" height="260" alt="<?=$lot['name'];?>">
                     </div>
                     <div class="lot__info">
-                        <span class="lot__category"><?=$categories[$message['category']];?></span>
-                        <h3 class="lot__title"><a class="text-link" href=""><?=$message['name'];?></a></h3>
+                        <span class="lot__category"><?=$categories[$lot['category']];?></span>
+                        <h3 class="lot__title"><a class="text-link" href=""><?=$lot['name'];?></a></h3>
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount">Стартовая цена</span>
-                                <span class="lot__cost"><?=number_format ((float)$message['price'],0,'.',' ');?><b class="rub">р</b></span>
+                                <span class="lot__cost"><?=number_format( (float)$lot['price'], 0, '.', ' ');?><b class="rub">р</b></span>
                             </div>
                             <div class="lot__timer timer">
                                 <?=$lot_time_remaining;?>

@@ -1,15 +1,16 @@
 <?php
 
-function relativeTime($time) {
+function relativeTime(int $time): string
+{
     $now = time();
-    if ((($now - $time)/(60*60))>=24) {
-        return date('d.m.y в H:i' ,$time);
+    $diff = $now - $time;
+    if ((($diff) / (60 * 60)) >= 24) {
+        return date('d.m.y в H:i', $time);
+    }
+    if (($diff / 60) <= 60) {
+        return round($diff / 60) . " минут назад";
     } else {
-        if ((($now - $time)/60)<=60) {
-            return round(($now - $time)/60) . " минут назад";
-        } else {
-            return round(($now - $time)/(60*60)) . " часов назад";
-        }
+        return round($diff / (60 * 60)) . " часов назад";
     }
 }
 

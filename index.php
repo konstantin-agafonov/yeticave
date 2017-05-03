@@ -1,6 +1,6 @@
 <?php
-// устанавливаем часовой пояс в Московское время
-date_default_timezone_set('Europe/Moscow');
+
+require_once 'config.php';
 
 // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
 $lot_time_remaining = "00:00";

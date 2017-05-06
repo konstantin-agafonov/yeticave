@@ -7,3 +7,4 @@ error_reporting(E_ALL);
 // устанавливаем часовой пояс в Московское время
 date_default_timezone_set('Europe/Moscow');
 
+session_start();

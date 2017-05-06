@@ -14,13 +14,11 @@ $now = time();
 // далее нужно вычислить оставшееся время до начала следующих суток и записать его в переменную $lot_time_remaining
 $lot_time_remaining = date("H:i", $tomorrow + ($tomorrow - $now));
 
-?>
+require_once 'data.php';
 
-<?php require_once 'data.php'; ?>
+require_once 'functions.php';
 
-<?php require_once 'functions.php'; ?>
-
-<?=includeTemplate('templates/header.php');?>
+echo includeTemplate('templates/header.php');?>
 
 <?=includeTemplate('templates/main.php',[
     'lots' => $lots,

@@ -8,8 +8,7 @@
 
         <?php
         if (isset($data['stakes'])) {
-            $stakes = json_decode($data['stakes'], true);
-            foreach ($stakes as $stake):?>
+            foreach ($data['stakes'] as $stake):?>
 
                 <tr class="rates__item">
                     <td class="rates__info">

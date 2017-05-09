@@ -16,7 +16,7 @@ require_once 'functions.php';
 <?=includeTemplate('templates/header.php');?>
 
 <?=includeTemplate('templates/my-lots.php',[
-    'stakes' => isset($_COOKIE['stakes']) ? $_COOKIE['stakes'] : null,
+    'stakes' => isset($_COOKIE['stakes']) ? json_decode($_COOKIE['stakes'], true) : null,
     'lots' => $lots,
     'categories' => $categories
 ]);?>

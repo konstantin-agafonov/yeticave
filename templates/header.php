@@ -8,6 +8,11 @@
 </head>
 <body>
 
+<!--<pre>
+<?/*=var_dump($_COOKIE); */?>
+<?/*=var_dump(json_decode($_COOKIE['stakes'],true)); */?>
+</pre>-->
+
 <header class="main-header">
     <div class="main-header__container container">
         <h1 class="visually-hidden">YetiCave</h1>

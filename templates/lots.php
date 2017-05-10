@@ -1,6 +1,6 @@
 <main>
 
-    <?php headerNav(); ?>
+    <?=includeTemplate('templates/header-nav.php');?>
 
     <section class="lot-item container">
         <div class="lot-item__content">
@@ -41,15 +41,20 @@
                                 </div>
                             </div>
 
-                            <?php if (isset($_SESSION['auth']['user_email'])): ?>
+                            <?php if (isset($_SESSION['auth']['user_email']) && (!$data['have_stake'])): ?>
 
-                                <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post">
+                                <form class="lot-item__form" method="post">
+                                    <input type="hidden" name="lot_id" value="<?=$data['id'];?>">
                                     <p class="lot-item__form-item">
                                         <label for="cost">Ваша ставка</label>
-                                        <input id="cost" type="number" name="cost" placeholder="12 000">
+                                        <input id="cost" type="number" name="cost" min="0" step="0.01"
+                                               placeholder="12 000">
                                     </p>
                                     <button type="submit" class="button">Сделать ставку</button>
                                 </form>
+                                <div style="color: red;clear: both;">
+                                    <?=isset($data['fields']['cost']['error']) ? $data['fields']['cost']['error'] : '';?>
+                                </div>
 
                             <?php endif; ?>
 

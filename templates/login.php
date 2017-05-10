@@ -1,6 +1,6 @@
 <main>
 
-    <?php headerNav(); ?>
+    <?=includeTemplate('templates/header-nav.php');?>
 
     <form class="form container <?= $data['form_validated'] ? '' : ' form--invalid'; ?>" method="post">
         <!-- form--invalid -->

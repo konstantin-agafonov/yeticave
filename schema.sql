@@ -1,0 +1,77 @@
+CREATE TABLE `yeticave`.`categories`
+(
+`id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+`name` VARCHAR(30) NOT NULL ,
+PRIMARY KEY (`id`)
+)
+ENGINE = InnoDB;
+
+CREATE TABLE `yeticave`.`lots`
+(
+`id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+`pic` VARCHAR(200) NOT NULL ,
+`name` VARCHAR(100) NOT NULL ,
+`desc` VARCHAR(1000) NOT NULL ,
+`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`start_price` FLOAT NOT NULL ,
+`end_date` TIMESTAMP NOT NULL ,
+`stake_step` FLOAT NOT NULL ,
+`num_likes` INT UNSIGNED NOT NULL ,
+`author_id` INT UNSIGNED NOT NULL ,
+`winner_id` INT UNSIGNED NOT NULL ,
+`category_id` INT UNSIGNED NOT NULL ,
+PRIMARY KEY (`id`),
+INDEX `winner_id` (`winner_id`),
+INDEX `author_id` (`author_id`),
+INDEX `category_id` (`category_id`)
+)
+ENGINE = InnoDB;
+
+CREATE TABLE `yeticave`.`stakes`
+(
+`id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`stake_sum` FLOAT NOT NULL ,
+`user_id` INT UNSIGNED NOT NULL ,
+`lot_id` INT UNSIGNED NOT NULL ,
+PRIMARY KEY (`id`),
+INDEX `user_id` (`user_id`),
+INDEX `lot_id` (`lot_id`)
+)
+ENGINE = InnoDB;
+
+
+CREATE TABLE `yeticave`.`users`
+(
+`id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+`name` VARCHAR(50) NOT NULL ,
+`avatar` VARCHAR(200) NOT NULL ,
+`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`email` VARCHAR(50) NOT NULL ,
+`password` VARCHAR(50) NOT NULL ,
+`contacts` VARCHAR(200) NOT NULL ,
+PRIMARY KEY (`id`)
+)
+ENGINE = InnoDB;
+
+
+CREATE TABLE `yeticave`.`users_lots`
+(
+`user_id` INT UNSIGNED NOT NULL ,
+`lot_id` INT UNSIGNED NOT NULL ,
+PRIMARY KEY (`user_id`, `lot_id`)
+)
+ENGINE = InnoDB;
+
+CREATE TABLE `yeticave`.`users_stakes`
+(
+`user_id` INT UNSIGNED NOT NULL ,
+`stake_id` INT UNSIGNED NOT NULL ,
+PRIMARY KEY (`user_id`, `stake_id`)
+)
+ENGINE = InnoDB;
+
+

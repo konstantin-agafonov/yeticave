@@ -56,22 +56,3 @@ CREATE TABLE `yeticave`.`users`
 PRIMARY KEY (`id`)
 )
 ENGINE = InnoDB;
-
-
-CREATE TABLE `yeticave`.`users_lots`
-(
-`user_id` INT UNSIGNED NOT NULL ,
-`lot_id` INT UNSIGNED NOT NULL ,
-PRIMARY KEY (`user_id`, `lot_id`)
-)
-ENGINE = InnoDB;
-
-CREATE TABLE `yeticave`.`users_stakes`
-(
-`user_id` INT UNSIGNED NOT NULL ,
-`stake_id` INT UNSIGNED NOT NULL ,
-PRIMARY KEY (`user_id`, `stake_id`)
-)
-ENGINE = InnoDB;
-
-

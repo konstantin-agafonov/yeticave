@@ -96,3 +96,4 @@ VALUES (
 select *
 from stakes
 where lot_id = 34;
+

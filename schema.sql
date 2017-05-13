@@ -31,7 +31,7 @@ CREATE TABLE `yeticave`.`lots`
 `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
 `pic` VARCHAR(255),
 `name` VARCHAR(255) NOT NULL ,
-`desc` VARCHAR(2000),
+`description` VARCHAR(2000),
 `start_price` DECIMAL(10,2) NOT NULL ,
 `end_date` TIMESTAMP NOT NULL ,
 `stake_step` DECIMAL(10,2) NOT NULL ,

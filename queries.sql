@@ -5,6 +5,24 @@ from categories;
 --получить самые новые, открытые лоты.
 --Каждый лот должен включать название, стартовую цену,
 --ссылку на изображение, цену, количество ставок, название категории;
+select    lots.id,
+					lots.name,
+          lots.start_price,
+          lots.pic,
+          categories.name,
+          max(stakes.stake_sum),
+					count(stakes.id)
+from      lots
+          inner join categories
+					on lots.category_id = categories.id
+          left join stakes
+					on stakes.lot_id = lots.id
+where			lots.winner_id is NULL
+group by	lots.id
+order by  lots.id desc
+limit     2;
+
+--этот ваниант оставлю
 select    lots.name,
           lots.start_price,
           lots.pic,
@@ -26,11 +44,8 @@ limit     2;
 --найти лот по его названию или описанию;
 select  *
 from    lots
-where   name = "search_string";
-
-select  *
-from    lots
-where   desc = "search_string";
+where   name = "search_string"
+        or description = "search_string";
 
 --добавить новый лот (все данные из формы добавления);
 insert into lots

@@ -52,7 +52,7 @@ insert into lots
 (
 `pic`,
 `name`,
-`desc`,
+`description`,
 `start_price`,
 `end_date`,
 `stake_step`,

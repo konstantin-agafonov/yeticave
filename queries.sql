@@ -15,7 +15,7 @@ from      lots
 					on lots.category_id = categories.id
 					and lots.winner_id is NULL
           left join (
-						select		lot_id,max(stake_sum)
+						select		lot_id,max(stake_sum),count(id)
 						from			stakes
 						group by	lot_id
 					) max_lots

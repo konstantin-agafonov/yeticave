@@ -20,6 +20,11 @@ require_once 'functions.php';
 
 echo includeTemplate('templates/header.php');
 
+
+
+var_dump(db_select($db_conn,'select name,email from users;'));
+
+
 db_update(
     $db_conn,
     'users',

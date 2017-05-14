@@ -34,15 +34,25 @@ function db_select(
 
     $prepared_sql = db_get_prepare_stmt($db_conn,$sql,$data);
     if (!$prepared_sql) {
-        return false;
+        return [];
     }
 
-    $result = mysqli_stmt_execute($prepared_sql);
+    mysqli_stmt_bind_result($prepared_sql, $name, $email);
+    mysqli_stmt_execute($prepared_sql);
+
+    $result = [];
+
+    while (mysqli_stmt_fetch($prepared_sql)) {
+        $result[] = [$name, $email];
+    }
+    /*$result =  mysqli_stmt_fetch_all()
     if (!$result) {
         $error = mysqli_error($db_conn);
         die("Ошибка MySQL: " . $error);
     }
-    return mysqli_fetch_all($result,MYSQLI_ASSOC);
+    return mysqli_fetch_all($result,MYSQLI_ASSOC);*/
+    return $result;
+
 }
 
 function db_insert(
@@ -53,7 +63,7 @@ function db_insert(
 
     $prepared_sql = db_get_prepare_stmt($db_conn,$sql,$data);
     if (!$prepared_sql) {
-        return false;
+        return [];
     }
 
     $result = mysqli_stmt_execute($prepared_sql);
@@ -96,10 +106,15 @@ function db_update(
 
     $prepared_sql = db_get_prepare_stmt($db_conn,$update_sql,array_merge(array_values($data),array_values($conditions)));
     if (!$prepared_sql) {
-        return false;
+        return [];
     }
 
     $result = mysqli_stmt_execute($prepared_sql);
+
+
+    var_dump($result);
+
+
     if (!$result) {
         $error = mysqli_error($db_conn);
         die("Ошибка MySQL: " . $error);

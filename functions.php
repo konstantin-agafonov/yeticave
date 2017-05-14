@@ -24,13 +24,19 @@ function relativeTime(int $time): string
 }
 
 require_once 'mysql_helper.php';
+require_once 'config.php';
 
 function db_select(
-                object $db_conn,
+                mysqli $db_conn,
                 string $sql,
                 array $data = []
             ) : array {
+
     $prepared_sql = db_get_prepare_stmt($db_conn,$sql,$data);
+    if (!$prepared_sql) {
+        return false;
+    }
+
     $result = mysqli_stmt_execute($prepared_sql);
     if (!$result) {
         $error = mysqli_error($db_conn);
@@ -40,11 +46,16 @@ function db_select(
 }
 
 function db_insert(
-                object $db_conn,
+                mysqli $db_conn,
                 string $sql,
                 array $data = []
             ) : array {
+
     $prepared_sql = db_get_prepare_stmt($db_conn,$sql,$data);
+    if (!$prepared_sql) {
+        return false;
+    }
+
     $result = mysqli_stmt_execute($prepared_sql);
     if (!$result) {
         $error = mysqli_error($db_conn);
@@ -52,38 +63,42 @@ function db_insert(
     }
     $records_count = mysqli_num_rows($result);
     return $records_count;
+
 }
 
 function db_update(
-                object $db_conn,
+                mysqli $db_conn,
                 string $table_name,
                 array $data,
-                array $conditions
+                array $conditions = []
             ) : array {
 
-    $field_names = [];
-    $field_val_phldr = [];
-    foreach ($data as $key => $value) {
-        $field_names[] = $key;
-        $field_val_phldr[] = '?';
-    }
+    $set_clause = ' set';
+    $set_clause_array = [];
+        foreach ($data as $name => $value) {
+            $set_clause_array[] = ' ' . mysqli_real_escape_string($db_conn,$name) . " = ?";
+        }
+    $set_clause .= implode(',',$set_clause_array);
 
     $where_clause = '';
     if (isset($conditions)) {
-        $where_clause = ' where ';
+        $where_clause = ' where';
         $where_conditions = [];
         foreach ($conditions as $name => $value) {
-            $where_conditions[] = " " . mysqli_real_escape_string($name) . " = ? ";
+            $where_conditions[] = " " . mysqli_real_escape_string($db_conn,$name) . " = ?";
         }
-        $where_clause .= explode(' and ',$where_conditions);
+        $where_clause .= implode(' and ',$where_conditions);
     }
 
-    $update_sql = 'update ' . mysqli_real_escape_string($table_name)
-        . ' (' . explode(',',$field_names) . ') values ('
-        . explode(',',$field_val_phldr) . ') '
+    $update_sql = 'update ' . mysqli_real_escape_string($db_conn,$table_name)
+        . $set_clause
         . $where_clause . ';';
 
     $prepared_sql = db_get_prepare_stmt($db_conn,$update_sql,array_merge(array_values($data),array_values($conditions)));
+    if (!$prepared_sql) {
+        return false;
+    }
+
     $result = mysqli_stmt_execute($prepared_sql);
     if (!$result) {
         $error = mysqli_error($db_conn);
@@ -91,5 +106,10 @@ function db_update(
     }
     $records_count = mysqli_num_rows($result);
     return $records_count;
+
 }
+
+
+
+
 

@@ -18,7 +18,18 @@ require_once 'data.php';
 
 require_once 'functions.php';
 
-echo includeTemplate('templates/header.php');?>
+echo includeTemplate('templates/header.php');
+
+db_update(
+    $db_conn,
+    'users',
+    ['name'=>'value1','email'=>300],
+    ['id'=>33,'password'=>400]
+);
+
+?>
+
+
 
 <?=includeTemplate('templates/main.php',[
     'lots' => $lots,

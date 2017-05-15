@@ -1,6 +1,8 @@
 <?php
 
 require_once 'config.php';
+require_once 'data.php';
+require_once 'functions.php';
 
 // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
 $lot_time_remaining = "00:00";
@@ -14,11 +16,7 @@ $now = time();
 // далее нужно вычислить оставшееся время до начала следующих суток и записать его в переменную $lot_time_remaining
 $lot_time_remaining = date("H:i", $tomorrow + ($tomorrow - $now));
 
-require_once 'data.php';
-
-require_once 'functions.php';
-
-echo includeTemplate('templates/header.php');?>
+echo includeTemplate('templates/header.php'); ?>
 
 <?=includeTemplate('templates/main.php',[
     'lots' => $lots,

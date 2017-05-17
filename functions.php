@@ -3,6 +3,28 @@
 require_once 'mysql_helper.php';
 require_once 'config.php';
 
+function getSubarrayValueByAnotherValue(array $array,$searched_key,$searched_value,$key2get) {
+    foreach ($array as $sub_array) {
+        if (isset($sub_array[$searched_key]) && isset($sub_array[$key2get])) {
+            if ($sub_array[$searched_key] === $searched_value) {
+                return $sub_array[$key2get];
+            }
+        }
+    }
+    return null;
+}
+
+function getSubarrayByElementValue(array $array,$searched_key,$searched_value) {
+    foreach ($array as $sub_array) {
+        if (isset($sub_array[$searched_key])) {
+            if ($sub_array[$searched_key] === $searched_value) {
+                return $sub_array;
+            }
+        }
+    }
+    return null;
+}
+
 function includeTemplate(string $path2template = null, array $data = null) : string
 {
     if (!file_exists($path2template)) {

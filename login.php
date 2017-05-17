@@ -2,6 +2,7 @@
 
 require_once 'config.php';
 require_once 'functions.php';
+require_once 'data.php';
 require_once 'userdata.php';
 
 $form_validated = true;
@@ -76,7 +77,10 @@ echo includeTemplate('templates/header.php');?>
 <?=includeTemplate('templates/login.php',[
     'fields' => $fields,
     'form_validated' => $form_validated,
-    'user_validated' => $user_validated
+    'user_validated' => $user_validated,
+    'categories' => $categories
 ]);?>
 
-<?=includeTemplate('templates/footer.php');?>
+<?=includeTemplate('templates/footer.php',[
+    'categories' => $categories
+]);?>

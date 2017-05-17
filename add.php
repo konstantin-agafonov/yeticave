@@ -1,17 +1,14 @@
 <?php
 
 require_once 'config.php';
+require_once 'functions.php';
+require_once 'data.php';
+require_once 'userdata.php';
 
 if (!isset($_SESSION['auth']['user_email'])) {
     header("HTTP/1.1 403 Forbidden");
     die("Страница доступна только для зарегистрированных пользователей!");
 }
-
-require_once 'data.php';
-
-require_once 'functions.php';
-
-global $categories;
 
 $form_validated = true;
 
@@ -125,38 +122,61 @@ if ($_POST) {
     }
 
     if ($form_validated) {
-        foreach ($fields as &$field) {
+        foreach ($fields as $field) {
             if (!$field['validated']) {
                 $form_validated = false;
                 break;
             }
         }
-        unset($field);
     }
 
 }
 
 
-echo includeTemplate('templates/header.php');
 
 
 if ($_POST && $form_validated){
 
-    echo includeTemplate('templates/lots.php',[
-        'bets' => [],
-        'lot' => [
-            'name' => $fields['lot-name']['value'],
-            'category' => $fields['category']['value'],
-            'price' => $fields['lot-rate']['value'],
-            'pic' => '../uploads/' . $file['name'],
-            'description' => $fields['message']['value'],
-            'step' => $fields['lot-step']['value'],
-        ],
-        'category' => $categories[ $fields['category']['value'] ]
+    $new_lot_id = db_insert(
+        $db_conn,
+        'insert into lots (
+              pic,
+              name,
+              description,
+              start_price,
+              end_date,
+              stake_step,
+              author_id,
+              category_id
+              ) values (?,?,?,?,?,?,?,?);',
+            [
+                '../uploads/' . $file['name'],
+                $fields['lot-name']['value'],
+                $fields['message']['value'],
+                $fields['lot-rate']['value'],
+                strtotime($fields['lot-date']['value']),
+                $fields['lot-step']['value'],
+                getSubarrayValueByAnotherValue(
+                    $users,
+                    'email',
+                    $_SESSION['auth']['user_email'],
+                    'id'
+                ),
+                $fields['category']['value']
     ]);
+
+    if ($new_lot_id) {
+        header("Location: lot.php?id=" . $new_lot_id);
+        exit();
+    } else {
+
+        echo includeTemplate('templates/header.php');
+        echo "<main><p>Добавление лота не удалось!</p></main>";
+    }
 
 } else {
 
+    echo includeTemplate('templates/header.php');
     echo includeTemplate('templates/add-lot.php',[
         'categories' => $categories,
         'form_validated' => $form_validated,
@@ -166,5 +186,6 @@ if ($_POST && $form_validated){
 
 }
 
-
-echo includeTemplate('templates/footer.php');
+echo includeTemplate('templates/footer.php',[
+    'categories' => $categories
+]);

@@ -1,8 +1,10 @@
 <?php
 
-$categories = ['Доски и лыжи', 'Крепления', 'Ботинки', 'Одежда', 'Инструменты', 'Разное'];
+/*$categories = ['Доски и лыжи', 'Крепления', 'Ботинки', 'Одежда', 'Инструменты', 'Разное'];*/
+$categories = db_select($db_conn,'select id,name from categories;');
 
-$lots = [
+
+/*$lots = [
     [
         'name' => '2014 Rossignol District Snowboard',
         'category' => 0,
@@ -39,4 +41,8 @@ $lots = [
         'price' => 5400,
         'pic' => '../img/lot-6.jpg',
     ],
-];
+];*/
+
+$lots = db_select($db_conn,'select * from lots;');
+
+

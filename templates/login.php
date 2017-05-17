@@ -1,6 +1,8 @@
 <main>
 
-    <?=includeTemplate('templates/header-nav.php');?>
+    <?=includeTemplate('templates/header-nav.php',[
+        'categories' => $data['categories']
+    ]);?>
 
     <form class="form container <?= $data['form_validated'] ? '' : ' form--invalid'; ?>" method="post">
         <!-- form--invalid -->

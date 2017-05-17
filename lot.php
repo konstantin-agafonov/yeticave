@@ -1,22 +1,30 @@
 <?php
 
 require_once 'config.php';
-
-require_once 'data.php';
-
 require_once 'functions.php';
+require_once 'data.php';
+require_once 'userdata.php';
+
 
 // ставки пользователей, которыми надо заполнить таблицу
-$bets = [
+/*$bets = [
     ['name' => 'Иван', 'price' => 11500, 'ts' => strtotime('-' . rand(1, 50) .' minute')],
     ['name' => 'Константин', 'price' => 11000, 'ts' => strtotime('-' . rand(1, 18) .' hour')],
     ['name' => 'Евгений', 'price' => 10500, 'ts' => strtotime('-' . rand(25, 50) .' hour')],
     ['name' => 'Семён', 'price' => 10000, 'ts' => strtotime('last week')]
-];
+];*/
 
 if (isset($_GET['id']) and ($_GET['id']!='')) {
     $lot_id = (int) $_GET['id'];
-    if (!isset($lots[$lot_id])) {
+    $lot_id_from_db = getSubarrayValueByAnotherValue($lots,'id',$lot_id,'id');
+
+    /*echo '<pre>';
+    var_dump($lot_id);
+    var_dump($lot_id_from_db);
+    var_dump($lots);
+    echo '</pre>';*/
+
+    if (!isset($lot_id_from_db)) {
         header('HTTP/1.1 404 Not Found');
         die('Запрошенного лота не существует!');
     }
@@ -24,6 +32,8 @@ if (isset($_GET['id']) and ($_GET['id']!='')) {
     header('HTTP/1.1 404 Not Found');
     die('Запрошенного лота не существует!');
 }
+
+$bets = db_select($db_conn,'select * from stakes where lot_id = ?;',[$lot_id]);
 
 $form_validated = true;
 
@@ -105,13 +115,25 @@ if ($_POST && $form_validated) {
     echo includeTemplate('templates/header.php');
     echo includeTemplate('templates/lots.php', [
         'bets' => $bets,
-        'lot' => $lots[$lot_id],
-        'category' => $categories[$lots[$lot_id]['category']],
+        'lot' => getSubarrayByElementValue($lots,'id',$lot_id),
+        'category' => getSubarrayValueByAnotherValue(
+            $categories,
+            'id',
+            getSubarrayValueByAnotherValue(
+                $lots,
+                'id',
+                $lot_id,
+                'category_id'),
+            'name'),
         'id' => $lot_id,
         'fields' => $fields,
-        'have_stake' => $have_stake
+        'have_stake' => $have_stake,
+        'categories' => $categories,
+        'users' => $users
     ]);
-    echo includeTemplate('templates/footer.php');
+    echo includeTemplate('templates/footer.php',[
+        'categories' => $categories
+    ]);
 
 }
 

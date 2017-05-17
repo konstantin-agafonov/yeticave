@@ -1,6 +1,8 @@
 <main>
 
-    <?= includeTemplate('templates/header-nav.php'); ?>
+    <?= includeTemplate('templates/header-nav.php',[
+        'categories' => $data['categories']
+    ]); ?>
 
     <form class="form form--add-lot container <?= $data['form_validated'] ? '' : ' form--invalid'; ?>" action="add.php"
           method="post" enctype="multipart/form-data"> <!-- form--invalid -->
@@ -15,7 +17,9 @@
                 <label for="lot-name">Наименование</label>
                 <input id="lot-name" type="text" name="lot-name" placeholder="Введите наименование лота"
                        value="<?= $data['fields']['lot-name']['validated'] ? $data['fields']['lot-name']['value'] : ''; ?>">
-                <span class="form__error"><?= $data['fields']['lot-name']['validated'] ? '' : $data['fields']['lot-name']['error']; ?></span>
+                <span class="form__error">
+                    <?= $data['fields']['lot-name']['validated'] ? '' : $data['fields']['lot-name']['error']; ?>
+                </span>
 
             </div>
 
@@ -32,10 +36,10 @@
                     <option value="" <?= ($entered_category) ? '' : 'selected'; ?> disabled>Выберите категорию
                     </option>
 
-                    <?php foreach ($data['categories'] as $index => $category): ?>
-                        <option value="<?= $index; ?>"
-                            <?= ($entered_category === $index) ? ' selected' : ''; ?>>
-                            <?= htmlspecialchars($category); ?>
+                    <?php foreach ($data['categories'] as $category): ?>
+                        <option value="<?= $category['id']; ?>"
+                            <?= ($entered_category === $category['id']) ? ' selected' : ''; ?>>
+                            <?= htmlspecialchars($category['name']); ?>
                         </option>
                     <?php endforeach; ?>
 

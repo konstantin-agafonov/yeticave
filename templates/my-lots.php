@@ -1,6 +1,8 @@
 <main>
 
-    <?=includeTemplate('templates/header-nav.php');?>
+    <?=includeTemplate('templates/header-nav.php',[
+        'categories' => $data['categories']
+    ]);?>
 
     <section class="rates container">
     <h2>Мои ставки</h2>
@@ -13,26 +15,47 @@
                 <tr class="rates__item">
                     <td class="rates__info">
                         <div class="rates__img">
-                            <img src="<?=$data['lots'][$stake['id']]['pic'];?>" width="54" height="40"
-                                 alt="<?=$data['lots'][$stake['id']]['name'];?>">
+                            <img src="<?=getSubarrayValueByAnotherValue(
+                                $data['lots'],
+                                'id',
+                                $stake['lot_id'],
+                                'pic');?>" width="54" height="40"
+                            alt="<?=getSubarrayValueByAnotherValue(
+                                $data['lots'],
+                                'id',
+                                $stake['lot_id'],
+                                'name');?>">
                         </div>
                         <h3 class="rates__title">
-                            <a href="/lot.php?id=<?=$stake['id'];?>">
-                                <?=$data['lots'][$stake['id']]['name'];?>
+                            <a href="/lot.php?id=<?=$stake['lot_id'];?>">
+                                <?=getSubarrayValueByAnotherValue(
+                                    $data['lots'],
+                                    'id',
+                                    $stake['lot_id'],
+                                    'name');?>
                             </a>
                         </h3>
                     </td>
                     <td class="rates__category">
-                        <?=$data['categories'][$data['lots'][$stake['id']]['category']];?>
+                        <?=getSubarrayValueByAnotherValue(
+                                $data['categories'],
+                                'id',
+                                getSubarrayValueByAnotherValue(
+                                    $data['lots'],
+                                    'id',
+                                    $stake['lot_id'],
+                                    'category_id'),
+                                'name'
+                            );?>
                     </td>
                     <td class="rates__timer">
                         <div class="timer timer--finishing">07:13:34</div>
                     </td>
                     <td class="rates__price">
-                        <?=$stake['cost'];?> р
+                        <?=$stake['stake_sum'];?> р
                     </td>
                     <td class="rates__time">
-                        <?=relativeTime((int)$stake['time']);?>
+                        <?=relativeTime((int)$stake['created_at']);?>
                     </td>
                 </tr>
 

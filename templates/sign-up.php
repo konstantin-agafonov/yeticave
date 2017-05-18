@@ -59,6 +59,9 @@
                     <span>+ Добавить</span>
                 </label>
             </div>
+            <span style="color: red;">
+                <?=isset($data['file']['error']) ? $data['file']['error'] : '';?>
+            </span>
         </div>
 
         <span class="form__error form__error--bottom" >Пожалуйста, исправьте ошибки в форме.</span>

@@ -2,7 +2,6 @@
 
 require_once 'config.php';
 require_once 'functions.php';
-require_once 'data.php';
 
 $form_validated = true;
 
@@ -85,14 +84,9 @@ if ($_POST) {
         }
     }
 
-    /*echo '<pre>';
-    var_dump($fields);
-    var_dump($file);
-    var_dump($_FILES);
-    echo '</pre>';*/
-
 }
 
+$categories = db_select($db_conn,'select id,name from categories;');
 
 echo includeTemplate('templates/header.php');
 

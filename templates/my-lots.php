@@ -15,38 +15,17 @@
                 <tr class="rates__item">
                     <td class="rates__info">
                         <div class="rates__img">
-                            <img src="<?=getSubarrayValueByAnotherValue(
-                                $data['lots'],
-                                'id',
-                                $stake['lot_id'],
-                                'pic');?>" width="54" height="40"
-                            alt="<?=getSubarrayValueByAnotherValue(
-                                $data['lots'],
-                                'id',
-                                $stake['lot_id'],
-                                'name');?>">
+                            <img src="<?=$stake['lot_pic'];?>" width="54" height="40"
+                            alt="<?=$stake['lot_name'];?>">
                         </div>
                         <h3 class="rates__title">
                             <a href="/lot.php?id=<?=$stake['lot_id'];?>">
-                                <?=getSubarrayValueByAnotherValue(
-                                    $data['lots'],
-                                    'id',
-                                    $stake['lot_id'],
-                                    'name');?>
+                                <?=$stake['lot_name'];?>
                             </a>
                         </h3>
                     </td>
                     <td class="rates__category">
-                        <?=getSubarrayValueByAnotherValue(
-                                $data['categories'],
-                                'id',
-                                getSubarrayValueByAnotherValue(
-                                    $data['lots'],
-                                    'id',
-                                    $stake['lot_id'],
-                                    'category_id'),
-                                'name'
-                            );?>
+                        <?=$stake['category_name'];?>
                     </td>
                     <td class="rates__timer">
                         <div class="timer timer--finishing">07:13:34</div>

@@ -2,36 +2,37 @@
 
 require_once 'config.php';
 require_once 'functions.php';
-require_once 'data.php';
-require_once 'userdata.php';
 
 if (!isset($_SESSION['auth']['user_email'])) {
     header("HTTP/1.1 403 Forbidden");
     die("Страница доступна только для зарегистрированных пользователей!");
 }
 
-$current_user_id = getSubarrayValueByAnotherValue(
-    $users,
-    'email',
-    $_SESSION['auth']['user_email'],
-    'id');
+$categories = db_select($db_conn,'select id,name from categories;');
 
-$stakes = db_select($db_conn,'select * from stakes where user_id = ?;',[$current_user_id]);
+$stakes = db_select(
+    $db_conn,
+'select  stakes.*,
+            lots.pic as lot_pic,
+            lots.name as lot_name,
+            categories.name as category_name
+    from stakes
+    left join lots on stakes.lot_id = lots.id
+    left join categories on lots.category_id = categories.id
+    where user_id = ?;',
+    [$_SESSION['auth']['user_id']]
+);
 
-?>
+echo includeTemplate('templates/header.php');
 
-
-
-<?=includeTemplate('templates/header.php');?>
-
-<?=includeTemplate('templates/my-lots.php',[
+echo includeTemplate('templates/my-lots.php',[
     'stakes' => $stakes,
-    'lots' => $lots,
     'categories' => $categories
-]);?>
+]);
 
-<?=includeTemplate('templates/footer.php',[
+echo includeTemplate('templates/footer.php',[
     'categories' => $categories
-]);?>
+]);
+
 
 

@@ -2,38 +2,34 @@
 
 require_once 'config.php';
 require_once 'functions.php';
-require_once 'data.php';
-require_once 'userdata.php';
-
-
-// ставки пользователей, которыми надо заполнить таблицу
-/*$bets = [
-    ['name' => 'Иван', 'price' => 11500, 'ts' => strtotime('-' . rand(1, 50) .' minute')],
-    ['name' => 'Константин', 'price' => 11000, 'ts' => strtotime('-' . rand(1, 18) .' hour')],
-    ['name' => 'Евгений', 'price' => 10500, 'ts' => strtotime('-' . rand(25, 50) .' hour')],
-    ['name' => 'Семён', 'price' => 10000, 'ts' => strtotime('last week')]
-];*/
-
-if (isset($_GET['id']) and ($_GET['id']!='')) {
-    $lot_id = (int) $_GET['id'];
-    $lot_id_from_db = getSubarrayValueByAnotherValue($lots,'id',$lot_id,'id');
 
     /*echo '<pre>';
-    var_dump($lot_id);
-    var_dump($lot_id_from_db);
-    var_dump($lots);
+    var_dump($_GET);
     echo '</pre>';*/
 
-    if (!isset($lot_id_from_db)) {
+if (isset($_GET['id']) && ($_GET['id'] != '')) {
+
+    $lot_id = (int)$_GET['id'];
+    $lot = db_select($db_conn,
+
+<<< EOD
+select  lots.*,
+        categories.name as category_name
+from    lots
+        left join categories on lots.category_id = categories.id
+where   lots.id= ?;
+EOD
+,[$lot_id]
+    );
+
+    if (!$lot) {
         header('HTTP/1.1 404 Not Found');
         die('Запрошенного лота не существует!');
     }
-} else {
-    header('HTTP/1.1 404 Not Found');
-    die('Запрошенного лота не существует!');
+
 }
 
-$bets = db_select($db_conn,'select * from stakes where lot_id = ?;',[$lot_id]);
+$categories = db_select($db_conn,'select id,name from categories;');
 
 $form_validated = true;
 
@@ -84,56 +80,76 @@ if ($_POST) {
 
 }
 
-if (isset($_COOKIE['stakes'])) {
-    $stakes = json_decode($_COOKIE['stakes'],true);
-} else {
-    $stakes = [];
-}
-
-$have_stake = false;
-foreach ($stakes as $stake) {
-    if ($stake['id'] == $lot_id) {
-        $have_stake = true;
-        break;
-    }
-}
-
 if ($_POST && $form_validated) {
 
-    $stakes[] = [
-        'id' => $fields['lot_id']['value'],
-        'time' => time(),
-        'cost' => $fields['cost']['value']
-    ];
-    setcookie('stakes', json_encode($stakes));
+    $lot = db_select($db_conn,
+<<< EOD
+select  lots.*,
+        categories.name as category_name
+from    lots
+        left join categories on lots.category_id = categories.id
+where   lots.id= ?;
+EOD
+        ,[$fields['lot_id']['value']]
+    );
 
-    header("Location: mylots.php");
-    exit();
+    $new_stake_id = db_insert($db_conn, 'insert into stakes (stake_sum,user_id,lot_id) values (?,?,?);',[
+        $fields['cost']['value'],
+        $_SESSION['auth']['user_id'],
+        $fields['lot_id']['value']
+    ]);
+
+}
+
+if (isset($lot) && $lot != false) {
+
+    // ставки пользователей, которыми надо заполнить таблицу
+    $stakes = db_select($db_conn,
+<<< EOD
+select  stakes.*,
+        users.name as user_name
+from    stakes
+        left join users on stakes.user_id = users.id
+where   lot_id = ?;
+EOD
+        ,[ (isset($lot_id)) ? $lot_id : $fields['lot_id']['value'] ]
+    );
+
+    $have_stake = false;
+
+    if ($stakes) {
+        foreach ($stakes as $stake) {
+            if ($stake['user_id'] == $_SESSION['auth']['user_id']) {
+                $have_stake = true;
+                break;
+            }
+        }
+    } else {
+        $stakes = [];
+    }
+
+    $lot = $lot[0];
+
+    echo includeTemplate('templates/header.php');
+
+    echo includeTemplate('templates/lots.php', [
+        'stakes' => $stakes,
+        'lot' => $lot,
+        'fields' => $fields,
+        'have_stake' => $have_stake,
+        'categories' => $categories
+    ]);
 
 } else {
 
     echo includeTemplate('templates/header.php');
-    echo includeTemplate('templates/lots.php', [
-        'bets' => $bets,
-        'lot' => getSubarrayByElementValue($lots,'id',$lot_id),
-        'category' => getSubarrayValueByAnotherValue(
-            $categories,
-            'id',
-            getSubarrayValueByAnotherValue(
-                $lots,
-                'id',
-                $lot_id,
-                'category_id'),
-            'name'),
-        'id' => $lot_id,
-        'fields' => $fields,
-        'have_stake' => $have_stake,
-        'categories' => $categories,
-        'users' => $users
-    ]);
-    echo includeTemplate('templates/footer.php',[
-        'categories' => $categories
-    ]);
+    echo "<main><p>Ошибка! <a href='/'>На главную</a></p></main>";
 
 }
+
+echo includeTemplate('templates/footer.php', [
+    'categories' => $categories
+]);
+
+
 

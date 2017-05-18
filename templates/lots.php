@@ -17,7 +17,7 @@
                         <img src="<?=htmlentities($data['lot']['pic']); ?>" width="730" height="548" alt="<?=htmlentities($data['lot']['name']); ?>">
                     </div>
                     <p class="lot-item__category">Категория:
-                        <span><?=htmlspecialchars($data['category']);?></span>
+                        <span><?=htmlspecialchars($data['lot']['category_name']);?></span>
                     </p>
                     <p class="lot-item__description">
                         <?=(isset($data['lot']['description']))?$data['lot']['description']:'Нет описания';?>
@@ -46,8 +46,8 @@
 
                             <?php if (isset($_SESSION['auth']['user_email']) && (!$data['have_stake'])): ?>
 
-                                <form class="lot-item__form" method="post">
-                                    <input type="hidden" name="lot_id" value="<?=$data['id'];?>">
+                                <form class="lot-item__form" method="post" action="lot.php">
+                                    <input type="hidden" name="lot_id" value="<?=$data['lot']['id'];?>">
                                     <p class="lot-item__form-item">
                                         <label for="cost">Ваша ставка</label>
                                         <input id="cost" type="number" name="cost" min="0" step="0.01"
@@ -65,19 +65,15 @@
 
 
                     <div class="history">
-                        <h3>История ставок (<span><?=count($data['bets']);?></span>)</h3>
-                        <!-- заполните эту таблицу данными из массива $bets-->
+                        <h3>История ставок (<span><?=count($data['stakes']);?></span>)</h3>
+                        <!-- заполните эту таблицу данными из массива $stakes-->
                         <table class="history__list">
 
-                            <?php if (!empty($data['bets'])): ?>
-                                <?php foreach ($data['bets'] as &$bet): ?>
+                            <?php if (!empty($data['stakes'])): ?>
+                                <?php foreach ($data['stakes'] as &$bet): ?>
                                     <tr class="history__item">
                                         <td class="history__name">
-                                            <?=getSubarrayValueByAnotherValue(
-                                                    $data['users'],
-                                                    'id',
-                                                    $bet['user_id'],
-                                                    'name');?>
+                                            <?=$bet['user_name'];?>
                                         </td>
                                         <td class="history__price"><?= htmlspecialchars($bet['stake_sum']); ?> р</td>
                                         <td class="history__time"><?= relativeTime(strtotime($bet['created_at'])); ?></td>

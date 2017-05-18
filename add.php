@@ -2,8 +2,8 @@
 
 require_once 'config.php';
 require_once 'functions.php';
-require_once 'data.php';
-require_once 'userdata.php';
+
+$categories = db_select($db_conn,'select id,name from categories;');
 
 if (!isset($_SESSION['auth']['user_email'])) {
     header("HTTP/1.1 403 Forbidden");
@@ -132,10 +132,10 @@ if ($_POST) {
 
 }
 
-
-
-
 if ($_POST && $form_validated){
+
+    $dtime = DateTime::createFromFormat("d.m.Y", $fields['lot-date']['value']);
+    $timestamp = $dtime->format("Y-m-d H:i:s");
 
     $new_lot_id = db_insert(
         $db_conn,
@@ -153,25 +153,23 @@ if ($_POST && $form_validated){
                 '../uploads/' . $file['name'],
                 $fields['lot-name']['value'],
                 $fields['message']['value'],
-                $fields['lot-rate']['value'],
-                strtotime($fields['lot-date']['value']),
-                $fields['lot-step']['value'],
-                getSubarrayValueByAnotherValue(
-                    $users,
-                    'email',
-                    $_SESSION['auth']['user_email'],
-                    'id'
-                ),
+                (float)$fields['lot-rate']['value'],
+                $timestamp,
+                (float)$fields['lot-step']['value'],
+                $_SESSION['auth']['user_id'],
                 $fields['category']['value']
     ]);
 
     if ($new_lot_id) {
+
         header("Location: lot.php?id=" . $new_lot_id);
         exit();
+
     } else {
 
         echo includeTemplate('templates/header.php');
         echo "<main><p>Добавление лота не удалось!</p></main>";
+
     }
 
 } else {

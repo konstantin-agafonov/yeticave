@@ -28,7 +28,7 @@
             <?php if (isset($_SESSION['auth']['user_email'])): ?>
 
                 <div class="user-menu__image">
-                    <img src="img/user.jpg" width="40" height="40" alt="Пользователь">
+                    <img src="uploads/<?=$_SESSION['auth']['user_avatar'];?>" width="40" height="40" alt="Пользователь">
                 </div>
                 <div class="user-menu__logged">
                     <p><a href="mylots.php"><?= $_SESSION['auth']['user_name']; ?></a></p>

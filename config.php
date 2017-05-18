@@ -21,4 +21,6 @@ if ($db_conn == false){
     die("Ошибка подключения: " . mysqli_connect_error());
 }
 
+mysqli_set_charset($db_conn,'utf8');
+
 session_start();

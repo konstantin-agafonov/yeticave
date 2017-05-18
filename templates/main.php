@@ -29,24 +29,34 @@
             <select class="lots__select">
                 <option>Все категории</option>
                 <?php foreach ($data['categories'] as $index => $category): ?>
-                    <option value="<?=$index;?>"><?=htmlspecialchars($category);?></option>
+                    <option value="<?=$category['id'];?>"><?=htmlspecialchars($category['name']);?></option>
                 <?php endforeach; ?>
             </select>
         </div>
         <ul class="lots__list">
 
-            <?php foreach ($data['lots'] as $lot_id => $lot): ?>
+            <?php foreach ($data['lots'] as $lot): ?>
                 <li class="lots__item lot">
                     <div class="lot__image">
-                        <img src="<?=htmlspecialchars($lot['pic']);?>" width="350" height="260" alt="<?=htmlspecialchars($lot['name']);?>">
+                        <img src="<?=htmlspecialchars($lot['pic']);?>" width="350" height="260"
+                             alt="<?=htmlspecialchars($lot['name']);?>">
                     </div>
                     <div class="lot__info">
-                        <span class="lot__category"><?=htmlspecialchars($data['categories'][$lot['category']]);?></span>
-                        <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?=$lot_id;?>"><?=$lot['name'];?></a></h3>
+                        <span class="lot__category">
+                            <?=htmlspecialchars(getSubarrayValueByAnotherValue(
+                                $data['categories'],
+                                'id',
+                                $lot['category_id'],
+                                'name'));?>
+                        </span>
+                        <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?=$lot['id'];?>"><?=$lot['name'];?></a></h3>
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount">Стартовая цена</span>
-                                <span class="lot__cost"><?=number_format( (float)$lot['price'], 0, '.', ' ');?><b class="rub">р</b></span>
+                                <span class="lot__cost">
+                                    <?=number_format( (float)$lot['start_price'], 0, '.', ' ');?>
+                                    <b class="rub">р</b>
+                                </span>
                             </div>
                             <div class="lot__timer timer">
                                 <?=htmlspecialchars($data['lot_time_remaining']);?>

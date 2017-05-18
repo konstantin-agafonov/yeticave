@@ -1,7 +1,6 @@
 <?php
 
 require_once 'config.php';
-require_once 'data.php';
 require_once 'functions.php';
 
 // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
@@ -16,15 +15,20 @@ $now = time();
 // далее нужно вычислить оставшееся время до начала следующих суток и записать его в переменную $lot_time_remaining
 $lot_time_remaining = date("H:i", $tomorrow + ($tomorrow - $now));
 
-echo includeTemplate('templates/header.php'); ?>
+$categories = db_select($db_conn,'select id,name from categories;');
+$lots = db_select($db_conn,'select * from lots;');
 
-<?=includeTemplate('templates/main.php',[
+echo includeTemplate('templates/header.php');
+
+echo includeTemplate('templates/main.php',[
     'lots' => $lots,
     'categories' => $categories,
     'lot_time_remaining' => $lot_time_remaining
-]);?>
+]);
 
-<?=includeTemplate('templates/footer.php');?>
+echo includeTemplate('templates/footer.php',[
+    'categories' => $categories
+]);
 
 
 

@@ -2,10 +2,9 @@
 
 require_once 'config.php';
 require_once 'functions.php';
-require_once 'userdata.php';
 
 $form_validated = true;
-$user_validated = null;
+$user_validated = true;
 
 $fields = [
     "email" => [
@@ -54,29 +53,40 @@ if ($_POST) {
     }
 
     if ($form_validated) {
-        $user_validated = false;
-        foreach ($users as $user) {
-            if ($user['email'] == $fields['email']['value'] && password_verify($fields['password']['value'],$user['password'])) {
-                $user_validated = true;
-                $_SESSION['auth']['user_email'] = $user['email'];
-                $_SESSION['auth']['user_name'] = $user['name'];
+
+        $user_from_db = db_select($db_conn,'select * from users where email= ?;',[$fields['email']['value']]);
+
+        if ($user_from_db) {
+            if (password_verify($fields['password']['value'],$user_from_db[0]['password'])) {
+                $_SESSION['auth']['user_id'] = $user_from_db[0]['id'];
+                $_SESSION['auth']['user_email'] = $user_from_db[0]['email'];
+                $_SESSION['auth']['user_name'] = $user_from_db[0]['name'];
+                $_SESSION['auth']['user_avatar'] = $user_from_db[0]['avatar'];
                 header("Location: /");
                 exit();
+            } else {
+                $form_validated = false;
+                $user_validated = false;
             }
+        } else {
+            $form_validated = false;
+            $user_validated = false;
         }
-        $form_validated = false;
     }
 
 }
 
-
+$categories = db_select($db_conn,'select id,name from categories;');
 
 echo includeTemplate('templates/header.php');?>
 
 <?=includeTemplate('templates/login.php',[
     'fields' => $fields,
     'form_validated' => $form_validated,
-    'user_validated' => $user_validated
+    'user_validated' => $user_validated,
+    'categories' => $categories
 ]);?>
 
-<?=includeTemplate('templates/footer.php');?>
+<?=includeTemplate('templates/footer.php',[
+    'categories' => $categories
+]);?>

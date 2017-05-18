@@ -8,11 +8,6 @@
 </head>
 <body>
 
-<!--<pre>
-<?/*=var_dump($_COOKIE); */?>
-<?/*=var_dump(json_decode($_COOKIE['stakes'],true)); */?>
-</pre>-->
-
 <header class="main-header">
     <div class="main-header__container container">
         <h1 class="visually-hidden">YetiCave</h1>
@@ -33,10 +28,10 @@
             <?php if (isset($_SESSION['auth']['user_email'])): ?>
 
                 <div class="user-menu__image">
-                    <img src="img/user.jpg" width="40" height="40" alt="Пользователь">
+                    <img src="uploads/<?=$_SESSION['auth']['user_avatar'];?>" width="40" height="40" alt="Пользователь">
                 </div>
                 <div class="user-menu__logged">
-                    <p><?= $_SESSION['auth']['user_name']; ?></p>
+                    <p><a href="mylots.php"><?= $_SESSION['auth']['user_name']; ?></a></p>
                     <a href="logout.php">Выйти</a>
                 </div>
 
@@ -44,7 +39,7 @@
 
                 <ul class="user-menu__list">
                     <li class="user-menu__item">
-                        <a href="sign-up.html">Регистрация</a>
+                        <a href="signup.php">Регистрация</a>
                     </li>
                     <li class="user-menu__item">
                         <a href="login.php">Вход</a>

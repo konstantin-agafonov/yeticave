@@ -44,7 +44,7 @@
                                 </div>
                             </div>
 
-                            <?php if (isset($_SESSION['auth']['user_email']) && (!$data['have_stake'])): ?>
+                            <?php if ($data['user']->logged_in && (!$data['have_stake'])) { ?>
 
                                 <form class="lot-item__form" method="post" action="lot.php">
                                     <input type="hidden" name="lot_id" value="<?=$data['lot']['id'];?>">
@@ -59,7 +59,7 @@
                                     <?=isset($data['fields']['cost']['error']) ? $data['fields']['cost']['error'] : '';?>
                                 </div>
 
-                            <?php endif; ?>
+                            <?php } ?>
 
                         </div>
 

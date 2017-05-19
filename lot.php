@@ -1,17 +1,13 @@
 <?php
 
 require_once 'config.php';
-require_once 'functions.php';
 
-    /*echo '<pre>';
-    var_dump($_GET);
-    echo '</pre>';*/
+$user = new User($db);
 
 if (isset($_GET['id']) && ($_GET['id'] != '')) {
 
     $lot_id = (int)$_GET['id'];
-    $lot = db_select($db_conn,
-
+    $lot = $db->select(
 <<< EOD
 select  lots.*,
         categories.name as category_name
@@ -28,8 +24,6 @@ EOD
     }
 
 }
-
-$categories = db_select($db_conn,'select id,name from categories;');
 
 $form_validated = true;
 
@@ -82,29 +76,29 @@ if ($_POST) {
 
 if ($_POST && $form_validated) {
 
-    $lot = db_select($db_conn,
+    $lot = $db->select(
 <<< EOD
 select  lots.*,
         categories.name as category_name
 from    lots
         left join categories on lots.category_id = categories.id
-where   lots.id= ?;
+where   lots.id = ?;
 EOD
         ,[$fields['lot_id']['value']]
     );
 
-    $new_stake_id = db_insert($db_conn, 'insert into stakes (stake_sum,user_id,lot_id) values (?,?,?);',[
+    $new_stake_id = $db->insert('insert into stakes (stake_sum,user_id,lot_id) values (?,?,?);',[
         $fields['cost']['value'],
-        $_SESSION['auth']['user_id'],
+        $user->user_id,
         $fields['lot_id']['value']
     ]);
 
 }
 
-if (isset($lot) && $lot != false) {
+if (isset($lot) && $lot !== false) {
 
     // ставки пользователей, которыми надо заполнить таблицу
-    $stakes = db_select($db_conn,
+    $stakes = $db->select(
 <<< EOD
 select  stakes.*,
         users.name as user_name
@@ -119,7 +113,7 @@ EOD
 
     if ($stakes) {
         foreach ($stakes as $stake) {
-            if ($stake['user_id'] == $_SESSION['auth']['user_id']) {
+            if ($stake['user_id'] == $user->user_id) {
                 $have_stake = true;
                 break;
             }
@@ -130,25 +124,30 @@ EOD
 
     $lot = $lot[0];
 
-    echo includeTemplate('templates/header.php');
-
+    echo includeTemplate('templates/header.php',[
+        'user' => $user
+    ]);
     echo includeTemplate('templates/lots.php', [
         'stakes' => $stakes,
         'lot' => $lot,
         'fields' => $fields,
         'have_stake' => $have_stake,
-        'categories' => $categories
+        'categories' => $categories,
+        'user' => $user
     ]);
 
 } else {
 
-    echo includeTemplate('templates/header.php');
+    echo includeTemplate('templates/header.php',[
+        'user' => $user
+    ]);
     echo "<main><p>Ошибка! <a href='/'>На главную</a></p></main>";
 
 }
 
 echo includeTemplate('templates/footer.php', [
-    'categories' => $categories
+    'categories' => $categories,
+    'user' => $user
 ]);
 
 

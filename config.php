@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once "functions.php";
+
 error_reporting(E_ALL);
 
 // устанавливаем часовой пояс в Московское время
@@ -13,14 +15,11 @@ define('DDF','d-m-Y H:i:s');
 // db connection
 define('DB_NAME','yeticave');
 define('DB_PASS','9UNmULQIcWOVKSqp');
-define('DB_SERVER','localhost');
+define('DB_HOST','localhost');
 define('DB_USER','yeticave');
 
-$db_conn = mysqli_connect(DB_SERVER, DB_USER,DB_PASS,DB_NAME);
-if ($db_conn == false){
-    die("Ошибка подключения: " . mysqli_connect_error());
-}
+$db = new Db(DB_HOST, DB_USER,DB_PASS,DB_NAME);
 
-mysqli_set_charset($db_conn,'utf8');
+$categories = $db->select('select id,name from categories;');
 
 session_start();

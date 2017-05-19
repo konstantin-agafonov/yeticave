@@ -1,10 +1,8 @@
 <?php
 
 require_once 'config.php';
-require_once 'functions.php';
 
 $form_validated = true;
-$user_validated = true;
 
 $fields = [
     "email" => [
@@ -54,39 +52,28 @@ if ($_POST) {
 
     if ($form_validated) {
 
-        $user_from_db = db_select($db_conn,'select * from users where email= ?;',[$fields['email']['value']]);
+        $user = new User($db,$fields['email']['value'],$fields['password']['value']);
 
-        if ($user_from_db) {
-            if (password_verify($fields['password']['value'],$user_from_db[0]['password'])) {
-                $_SESSION['auth']['user_id'] = $user_from_db[0]['id'];
-                $_SESSION['auth']['user_email'] = $user_from_db[0]['email'];
-                $_SESSION['auth']['user_name'] = $user_from_db[0]['name'];
-                $_SESSION['auth']['user_avatar'] = $user_from_db[0]['avatar'];
-                header("Location: /");
-                exit();
-            } else {
-                $form_validated = false;
-                $user_validated = false;
-            }
-        } else {
+        if (!$user->logged_in) {
             $form_validated = false;
-            $user_validated = false;
         }
+
     }
 
 }
 
-$categories = db_select($db_conn,'select id,name from categories;');
-
-echo includeTemplate('templates/header.php');?>
+echo includeTemplate('templates/header.php',[
+    'user' => $user
+]);?>
 
 <?=includeTemplate('templates/login.php',[
     'fields' => $fields,
     'form_validated' => $form_validated,
-    'user_validated' => $user_validated,
+    'user_validated' => isset($user) ? $user->logged_in : true,
     'categories' => $categories
 ]);?>
 
 <?=includeTemplate('templates/footer.php',[
-    'categories' => $categories
+    'categories' => $categories,
+    'user' => $user
 ]);?>

@@ -1,11 +1,10 @@
 <?php
 
 require_once 'config.php';
-require_once 'functions.php';
 
-$categories = db_select($db_conn,'select id,name from categories;');
+$user = new User($db);
 
-if (!isset($_SESSION['auth']['user_email'])) {
+if (!$user->logged_in) {
     header("HTTP/1.1 403 Forbidden");
     die("Страница доступна только для зарегистрированных пользователей!");
 }
@@ -137,26 +136,27 @@ if ($_POST && $form_validated){
     $dtime = DateTime::createFromFormat("d.m.Y", $fields['lot-date']['value']);
     $timestamp = $dtime->format("Y-m-d H:i:s");
 
-    $new_lot_id = db_insert(
-        $db_conn,
-        'insert into lots (
-              pic,
-              name,
-              description,
-              start_price,
-              end_date,
-              stake_step,
-              author_id,
-              category_id
-              ) values (?,?,?,?,?,?,?,?);',
-            [
+    $new_lot_id = $db->insert(
+<<< EOD
+insert into lots (
+     pic,
+     name,
+     description,
+     start_price,
+     end_date,
+     stake_step,
+     author_id,
+     category_id
+     ) values (?,?,?,?,?,?,?,?);
+EOD
+    ,[
                 '../uploads/' . $file['name'],
                 $fields['lot-name']['value'],
                 $fields['message']['value'],
                 (float)$fields['lot-rate']['value'],
                 $timestamp,
                 (float)$fields['lot-step']['value'],
-                $_SESSION['auth']['user_id'],
+                $user->user_id,
                 $fields['category']['value']
     ]);
 
@@ -167,14 +167,18 @@ if ($_POST && $form_validated){
 
     } else {
 
-        echo includeTemplate('templates/header.php');
+        echo includeTemplate('templates/header.php',[
+            'user' => $user
+        ]);
         echo "<main><p>Добавление лота не удалось!</p></main>";
 
     }
 
 } else {
 
-    echo includeTemplate('templates/header.php');
+    echo includeTemplate('templates/header.php',[
+        'user' => $user
+    ]);
     echo includeTemplate('templates/add-lot.php',[
         'categories' => $categories,
         'form_validated' => $form_validated,
@@ -185,5 +189,6 @@ if ($_POST && $form_validated){
 }
 
 echo includeTemplate('templates/footer.php',[
-    'categories' => $categories
+    'categories' => $categories,
+    'user' => $user
 ]);

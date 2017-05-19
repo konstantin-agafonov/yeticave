@@ -2,7 +2,9 @@
 
 require_once 'config.php';
 
-if (!isset($_SESSION['auth']['user_email'])) {
+$user = new User($db);
+
+if (!$user->logged_in) {
     header("HTTP/1.1 403 Forbidden");
     die("Страница доступна только для зарегистрированных пользователей!");
 }
@@ -18,10 +20,12 @@ left join lots on stakes.lot_id = lots.id
 left join categories on lots.category_id = categories.id
 where user_id = ?;
 EOD
-    ,[$_SESSION['auth']['user_id']]
+    ,[$user->user_id]
 );
 
-echo includeTemplate('templates/header.php');
+echo includeTemplate('templates/header.php',[
+    'user' => $user
+]);
 
 echo includeTemplate('templates/my-lots.php',[
     'stakes' => $stakes,
@@ -29,7 +33,8 @@ echo includeTemplate('templates/my-lots.php',[
 ]);
 
 echo includeTemplate('templates/footer.php',[
-    'categories' => $categories
+    'categories' => $categories,
+    'user' => $user
 ]);
 
 

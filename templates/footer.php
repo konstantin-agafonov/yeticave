@@ -28,7 +28,7 @@
             </a>
         </div>
 
-        <?php if (isset($_SESSION['auth']['user_email'])): ?>
+        <?php if ($data['user']->logged_in): ?>
             <a class="main-footer__add-lot button" href="add.php">Добавить лот</a>
         <?php endif; ?>
 

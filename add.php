@@ -2,7 +2,9 @@
 
 require_once 'config.php';
 
-if (!isset($_SESSION['auth']['user_email'])) {
+$user = new User($db);
+
+if (!$user->logged_in) {
     header("HTTP/1.1 403 Forbidden");
     die("Страница доступна только для зарегистрированных пользователей!");
 }
@@ -154,7 +156,7 @@ EOD
                 (float)$fields['lot-rate']['value'],
                 $timestamp,
                 (float)$fields['lot-step']['value'],
-                $_SESSION['auth']['user_id'],
+                $user->user_id,
                 $fields['category']['value']
     ]);
 
@@ -165,14 +167,18 @@ EOD
 
     } else {
 
-        echo includeTemplate('templates/header.php');
+        echo includeTemplate('templates/header.php',[
+            'user' => $user
+        ]);
         echo "<main><p>Добавление лота не удалось!</p></main>";
 
     }
 
 } else {
 
-    echo includeTemplate('templates/header.php');
+    echo includeTemplate('templates/header.php',[
+        'user' => $user
+    ]);
     echo includeTemplate('templates/add-lot.php',[
         'categories' => $categories,
         'form_validated' => $form_validated,
@@ -183,5 +189,6 @@ EOD
 }
 
 echo includeTemplate('templates/footer.php',[
-    'categories' => $categories
+    'categories' => $categories,
+    'user' => $user
 ]);

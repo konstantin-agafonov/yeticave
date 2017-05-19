@@ -2,6 +2,8 @@
 
 require_once 'config.php';
 
+$user = new User($db);
+
 $form_validated = true;
 
 $fields = [
@@ -85,7 +87,9 @@ if ($_POST) {
 
 }
 
-echo includeTemplate('templates/header.php');
+echo includeTemplate('templates/header.php',[
+    'user' => $user
+]);
 
 if ($_POST && $form_validated){
 
@@ -116,5 +120,6 @@ if ($_POST && $form_validated){
 }
 
 echo includeTemplate('templates/footer.php',[
-    'categories' => $categories
+    'categories' => $categories,
+    'user' => $user
 ]);

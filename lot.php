@@ -2,6 +2,8 @@
 
 require_once 'config.php';
 
+$user = new User($db);
+
 if (isset($_GET['id']) && ($_GET['id'] != '')) {
 
     $lot_id = (int)$_GET['id'];
@@ -87,7 +89,7 @@ EOD
 
     $new_stake_id = $db->insert('insert into stakes (stake_sum,user_id,lot_id) values (?,?,?);',[
         $fields['cost']['value'],
-        $_SESSION['auth']['user_id'],
+        $user->user_id,
         $fields['lot_id']['value']
     ]);
 
@@ -111,7 +113,7 @@ EOD
 
     if ($stakes) {
         foreach ($stakes as $stake) {
-            if ($stake['user_id'] == $_SESSION['auth']['user_id']) {
+            if ($stake['user_id'] == $user->user_id) {
                 $have_stake = true;
                 break;
             }
@@ -122,24 +124,30 @@ EOD
 
     $lot = $lot[0];
 
-    echo includeTemplate('templates/header.php');
+    echo includeTemplate('templates/header.php',[
+        'user' => $user
+    ]);
     echo includeTemplate('templates/lots.php', [
         'stakes' => $stakes,
         'lot' => $lot,
         'fields' => $fields,
         'have_stake' => $have_stake,
-        'categories' => $categories
+        'categories' => $categories,
+        'user' => $user
     ]);
 
 } else {
 
-    echo includeTemplate('templates/header.php');
+    echo includeTemplate('templates/header.php',[
+        'user' => $user
+    ]);
     echo "<main><p>Ошибка! <a href='/'>На главную</a></p></main>";
 
 }
 
 echo includeTemplate('templates/footer.php', [
-    'categories' => $categories
+    'categories' => $categories,
+    'user' => $user
 ]);
 
 

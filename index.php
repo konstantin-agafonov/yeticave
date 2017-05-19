@@ -2,6 +2,8 @@
 
 require_once 'config.php';
 
+$user = new User($db);
+
 // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
 $lot_time_remaining = "00:00";
 
@@ -23,7 +25,9 @@ from    lots
 EOD
     );
 
-echo includeTemplate('templates/header.php');
+echo includeTemplate('templates/header.php',[
+    'user' => $user
+]);
 
 echo includeTemplate('templates/main.php',[
     'lots' => $lots,
@@ -32,7 +36,8 @@ echo includeTemplate('templates/main.php',[
 ]);
 
 echo includeTemplate('templates/footer.php',[
-    'categories' => $categories
+    'categories' => $categories,
+    'user' => $user
 ]);
 
 

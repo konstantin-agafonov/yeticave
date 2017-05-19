@@ -2,8 +2,8 @@
 
 require_once 'config.php';
 
-unset($_SESSION['auth']);
-setcookie('stakes','',strtotime("-30 days"));
+$user = new User($db);
 
-header("Location: /");
-exit();
+if ($user->logged_in) {
+    $user->logout();
+}

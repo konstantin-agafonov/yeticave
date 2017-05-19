@@ -2,8 +2,18 @@
 
 class Db {
 
+    /**
+     * @var mysqli
+     */
     private $connection;
 
+    /**
+     * Db constructor.
+     * @param string $dbHost
+     * @param string $dbUser
+     * @param string $dbPass
+     * @param string $dbName
+     */
     function __construct(string $dbHost,string $dbUser,string $dbPass,string $dbName) {
         $this->connection = mysqli_connect(DB_HOST, DB_USER,DB_PASS,DB_NAME);
         if ($this->connection == false){
@@ -19,7 +29,7 @@ class Db {
      * @param $sql string SQL запрос с плейсхолдерами вместо значений
      * @param array $data Данные для вставки на место плейсхолдеров
      *
-     * @return mysqli_stmt Подготовленное выражение
+     * @return bool|mysqli_stmt Подготовленное выражение
      */
     private function get_prepare_stmt(string $sql, $data = []) {
         $stmt = mysqli_prepare($this->connection, $sql);
@@ -53,7 +63,11 @@ class Db {
         return $stmt;
     }
 
-
+    /**
+     * @param string $sql
+     * @param array $data
+     * @return array
+     */
     function select(string $sql, array $data = []): array
     {
         $prepared_sql = $this->get_prepare_stmt($sql,$data);
@@ -73,11 +87,22 @@ class Db {
         return $data;
     }
 
+    /**
+     * @param string $sql
+     * @param array $data
+     * @return bool|int
+     */
     function insert(string $sql, array $data = [])
     {
         return $this->getInsertOrUpdateResult($sql, $data, false);
     }
 
+    /**
+     * @param string $table_name
+     * @param array $data
+     * @param array $conditions
+     * @return bool|int
+     */
     function update(string $table_name, array $data, array $conditions = [])
     {
         $placeholders = [];
@@ -89,6 +114,12 @@ class Db {
         return $this->getInsertOrUpdateResult($this->connection, $sql, $placeholders, true);
     }
 
+    /**
+     * @param string $sql
+     * @param array $placeholders
+     * @param bool $update
+     * @return bool|int
+     */
     private function getInsertOrUpdateResult(string $sql, array $placeholders = [], $update = true)
     {
         $prepared_sql = $this->get_prepare_stmt($sql, $placeholders);
@@ -113,6 +144,11 @@ class Db {
         return (int) $idOrCount;
     }
 
+    /**
+     * @param array $data
+     * @param array $placeholders
+     * @return string
+     */
     private function getFieldsString($data = [], array &$placeholders): string
     {
         $fields = [];

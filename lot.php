@@ -1,17 +1,11 @@
 <?php
 
 require_once 'config.php';
-require_once 'functions.php';
-
-    /*echo '<pre>';
-    var_dump($_GET);
-    echo '</pre>';*/
 
 if (isset($_GET['id']) && ($_GET['id'] != '')) {
 
     $lot_id = (int)$_GET['id'];
-    $lot = db_select($db_conn,
-
+    $lot = $db->select(
 <<< EOD
 select  lots.*,
         categories.name as category_name
@@ -28,8 +22,6 @@ EOD
     }
 
 }
-
-$categories = db_select($db_conn,'select id,name from categories;');
 
 $form_validated = true;
 
@@ -82,18 +74,18 @@ if ($_POST) {
 
 if ($_POST && $form_validated) {
 
-    $lot = db_select($db_conn,
+    $lot = $db->select(
 <<< EOD
 select  lots.*,
         categories.name as category_name
 from    lots
         left join categories on lots.category_id = categories.id
-where   lots.id= ?;
+where   lots.id = ?;
 EOD
         ,[$fields['lot_id']['value']]
     );
 
-    $new_stake_id = db_insert($db_conn, 'insert into stakes (stake_sum,user_id,lot_id) values (?,?,?);',[
+    $new_stake_id = $db->insert('insert into stakes (stake_sum,user_id,lot_id) values (?,?,?);',[
         $fields['cost']['value'],
         $_SESSION['auth']['user_id'],
         $fields['lot_id']['value']
@@ -101,10 +93,10 @@ EOD
 
 }
 
-if (isset($lot) && $lot != false) {
+if (isset($lot) && $lot !== false) {
 
     // ставки пользователей, которыми надо заполнить таблицу
-    $stakes = db_select($db_conn,
+    $stakes = $db->select(
 <<< EOD
 select  stakes.*,
         users.name as user_name
@@ -131,7 +123,6 @@ EOD
     $lot = $lot[0];
 
     echo includeTemplate('templates/header.php');
-
     echo includeTemplate('templates/lots.php', [
         'stakes' => $stakes,
         'lot' => $lot,

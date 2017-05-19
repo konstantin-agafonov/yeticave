@@ -1,9 +1,6 @@
 <?php
 
 require_once 'config.php';
-require_once 'functions.php';
-
-$categories = db_select($db_conn,'select id,name from categories;');
 
 if (!isset($_SESSION['auth']['user_email'])) {
     header("HTTP/1.1 403 Forbidden");
@@ -137,19 +134,20 @@ if ($_POST && $form_validated){
     $dtime = DateTime::createFromFormat("d.m.Y", $fields['lot-date']['value']);
     $timestamp = $dtime->format("Y-m-d H:i:s");
 
-    $new_lot_id = db_insert(
-        $db_conn,
-        'insert into lots (
-              pic,
-              name,
-              description,
-              start_price,
-              end_date,
-              stake_step,
-              author_id,
-              category_id
-              ) values (?,?,?,?,?,?,?,?);',
-            [
+    $new_lot_id = $db->insert(
+<<< EOD
+insert into lots (
+     pic,
+     name,
+     description,
+     start_price,
+     end_date,
+     stake_step,
+     author_id,
+     category_id
+     ) values (?,?,?,?,?,?,?,?);
+EOD
+    ,[
                 '../uploads/' . $file['name'],
                 $fields['lot-name']['value'],
                 $fields['message']['value'],

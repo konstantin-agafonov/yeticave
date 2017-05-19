@@ -18,7 +18,7 @@
         </div>
         <div class="form__item form__item--last <?= $data['fields']['password']['validated'] ? '' : 'form__item--invalid'; ?>">
             <label for="password">Пароль*</label>
-            <input id="password" type="text" name="password" placeholder="Введите пароль"
+            <input id="password" type="password" name="password" placeholder="Введите пароль"
                    value="<?= $data['fields']['password']['validated'] ? $data['fields']['password']['value'] : ''; ?>">
             <span class="form__error">
                 <?= $data['fields']['password']['validated'] ? '' : $data['fields']['password']['error']; ?>

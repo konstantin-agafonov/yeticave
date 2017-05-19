@@ -1,7 +1,6 @@
 <?php
 
 require_once 'config.php';
-require_once 'functions.php';
 
 $form_validated = true;
 $user_validated = true;
@@ -54,7 +53,7 @@ if ($_POST) {
 
     if ($form_validated) {
 
-        $user_from_db = db_select($db_conn,'select * from users where email= ?;',[$fields['email']['value']]);
+        $user_from_db = $db->select('select * from users where email= ?;',[$fields['email']['value']]);
 
         if ($user_from_db) {
             if (password_verify($fields['password']['value'],$user_from_db[0]['password'])) {
@@ -75,8 +74,6 @@ if ($_POST) {
     }
 
 }
-
-$categories = db_select($db_conn,'select id,name from categories;');
 
 echo includeTemplate('templates/header.php');?>
 

@@ -1,7 +1,6 @@
 <?php
 
 require_once 'config.php';
-require_once 'functions.php';
 
 $form_validated = true;
 
@@ -86,15 +85,13 @@ if ($_POST) {
 
 }
 
-$categories = db_select($db_conn,'select id,name from categories;');
-
 echo includeTemplate('templates/header.php');
 
 if ($_POST && $form_validated){
 
     $new_pass_hash =  password_hash($fields['password']['value'], PASSWORD_DEFAULT);
 
-    $new_user_id = db_insert($db_conn,'insert into users (email,name,contacts,password,avatar) values (?,?,?,?,?);',[
+    $new_user_id = $db->insert('insert into users (email,name,contacts,password,avatar) values (?,?,?,?,?);',[
         $fields['email']['value'],
         $fields['name']['value'],
         $fields['contacts']['value'],

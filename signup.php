@@ -2,7 +2,9 @@
 
 require_once 'config.php';
 
-$user = new User($db);
+use Core\User;
+
+$user = new User('Db');
 
 $form_validated = true;
 
@@ -95,13 +97,23 @@ if ($_POST && $form_validated){
 
     $new_pass_hash =  password_hash($fields['password']['value'], PASSWORD_DEFAULT);
 
-    $new_user_id = $db->insert('insert into users (email,name,contacts,password,avatar) values (?,?,?,?,?);',[
+    $new_user = new ActiveRecord\Record\UserRecord('Core\Db',[
+        'email'     => $fields['email']['value'],
+        'name'      => $fields['name']['value'],
+        'contacts'  => $fields['contacts']['value'],
+        'password'  => $new_pass_hash,
+        'avatar'    => $file['name']
+    ],true);
+
+    $new_user_id = $new_user->save();
+
+/*        $db->insert('insert into users (email,name,contacts,password,avatar) values (?,?,?,?,?);',[
         $fields['email']['value'],
         $fields['name']['value'],
         $fields['contacts']['value'],
         $new_pass_hash,
         $file['name']
-    ]);
+    ]);*/
 
     if ($new_user_id) {
         echo "<main><p>Вы были успешно зарегистрированы! Зайдите на сайт на <a href='login.php'>странице входа</a>

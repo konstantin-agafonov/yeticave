@@ -12,15 +12,16 @@
             <?php if ($data['lot']): ?>
 
                 <div class="lot-item__left">
-                    <h2><?=htmlentities($data['lot']['name']); ?></h2>
+                    <h2><?=htmlentities($data['lot']->name_Field); ?></h2>
                     <div class="lot-item__image">
-                        <img src="<?=htmlentities($data['lot']['pic']); ?>" width="730" height="548" alt="<?=htmlentities($data['lot']['name']); ?>">
+                        <img src="<?=htmlentities($data['lot']->pic_Field); ?>"
+                             width="730" height="548" alt="<?=htmlentities($data['lot']->name_Field); ?>">
                     </div>
                     <p class="lot-item__category">Категория:
-                        <span><?=htmlspecialchars($data['lot']['category_name']);?></span>
+                        <span><?=htmlspecialchars($data['lot']->category_name_Field);?></span>
                     </p>
                     <p class="lot-item__description">
-                        <?=(isset($data['lot']['description']))?$data['lot']['description']:'Нет описания';?>
+                        <?=(isset($data['lot']->description_Field))?$data['lot']->description_Field:'Нет описания';?>
                     </p>
                 </div>
                 <div class="lot-item__right">
@@ -33,21 +34,24 @@
                                 <div class="lot-item__rate">
                                     <span class="lot-item__amount">Текущая цена</span>
                                     <span class="lot-item__cost">
-                                    <?= number_format((float)$data['lot']['start_price'], 2, '.', ' '); ?>
+                                    <?= number_format(
+                                            (float)$data['lot']->start_price_Field,
+                                            2, '.', ' '); ?>
                                 </span>
                                 </div>
                                 <div class="lot-item__min-cost">
                                     Мин. ставка <span>
-                                        <?= (isset($data['lot']['stake_step'])) ? number_format((float)$data['lot']['stake_step'],
+                                        <?= (isset($data['lot']->stake_step_Field)) ? number_format(
+                                                (float)$data['lot']->stake_step_Field,
                                             2, '.', ' ') : 'Не определено'; ?>
                                         р</span>
                                 </div>
                             </div>
 
-                            <?php if ($data['user']->logged_in && (!$data['have_stake'])) { ?>
+                            <?php if ($data['user']->isLoggedIn() && (!$data['have_stake'])) { ?>
 
                                 <form class="lot-item__form" method="post" action="lot.php">
-                                    <input type="hidden" name="lot_id" value="<?=$data['lot']['id'];?>">
+                                    <input type="hidden" name="lot_id" value="<?=$data['lot']->id_Field;?>">
                                     <p class="lot-item__form-item">
                                         <label for="cost">Ваша ставка</label>
                                         <input id="cost" type="number" name="cost" min="0" step="0.01"

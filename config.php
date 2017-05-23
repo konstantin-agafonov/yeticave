@@ -18,8 +18,10 @@ define('DB_PASS','9UNmULQIcWOVKSqp');
 define('DB_HOST','localhost');
 define('DB_USER','yeticave');
 
-$db = new Db(DB_HOST, DB_USER,DB_PASS,DB_NAME);
+use Core\Db;
+Db::init();
 
-$categories = $db->select('select id,name from categories;');
+$categories = Db::select('select id,name from categories;');
 
 session_start();
+

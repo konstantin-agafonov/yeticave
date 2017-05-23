@@ -1,25 +1,25 @@
 <?php
 
+namespace Core;
+
 class Db {
 
     /**
      * @var mysqli
      */
-    private $connection;
+    private static $connection = null;
 
-    /**
-     * Db constructor.
-     * @param string $dbHost
-     * @param string $dbUser
-     * @param string $dbPass
-     * @param string $dbName
-     */
-    function __construct(string $dbHost,string $dbUser,string $dbPass,string $dbName) {
-        $this->connection = mysqli_connect(DB_HOST, DB_USER,DB_PASS,DB_NAME);
-        if ($this->connection == false){
-            die("Ошибка подключения: " . mysqli_connect_error());
+    private function __construct() {}
+    private function __clone() {}
+
+    public static function init() {
+        if (!isset(self::$connection)) {
+            self::$connection = mysqli_connect(DB_HOST, DB_USER,DB_PASS,DB_NAME);
+            if (self::$connection === false){
+                die("Ошибка подключения: " . mysqli_connect_error());
+            }
+            mysqli_set_charset(self::$connection,'utf8');
         }
-        mysqli_set_charset($this->connection,'utf8');
     }
 
     /**
@@ -31,8 +31,8 @@ class Db {
      *
      * @return bool|mysqli_stmt Подготовленное выражение
      */
-    private function get_prepare_stmt(string $sql, $data = []) {
-        $stmt = mysqli_prepare($this->connection, $sql);
+    private static function get_prepare_stmt(string $sql, $data = []) {
+        $stmt = mysqli_prepare(self::$connection, $sql);
 
         if ($data) {
             $types = '';
@@ -57,6 +57,13 @@ class Db {
                 }
             }
 
+            /*echo '<pre>';
+            var_dump($sql);
+            var_dump($stmt);
+            var_dump($types);
+            var_dump($stmt_data);
+            echo '</pre>';*/
+
             mysqli_stmt_bind_param($stmt, $types, ...$stmt_data);
         }
 
@@ -68,9 +75,9 @@ class Db {
      * @param array $data
      * @return array
      */
-    function select(string $sql, array $data = []): array
+    static function select(string $sql, array $data = []): array
     {
-        $prepared_sql = $this->get_prepare_stmt($sql,$data);
+        $prepared_sql = self::get_prepare_stmt($sql,$data);
 
         if ($prepared_sql === false) {
             return [];
@@ -92,9 +99,9 @@ class Db {
      * @param array $data
      * @return bool|int
      */
-    function insert(string $sql, array $data = [])
+    static function insert(string $sql, array $data = [])
     {
-        return $this->getInsertOrUpdateResult($sql, $data, false);
+        return self::getInsertOrUpdateResult($sql, $data, false);
     }
 
     /**
@@ -103,15 +110,15 @@ class Db {
      * @param array $conditions
      * @return bool|int
      */
-    function update(string $table_name, array $data, array $conditions = [])
+    static function update(string $table_name, array $data, array $conditions = [])
     {
         $placeholders = [];
-        $fieldsString = $this->getFieldsString($data, $placeholders);
-        $whereFields = $this->getFieldsString($conditions, $placeholders);
+        $fieldsString = self::getFieldsString($data, $placeholders);
+        $whereFields = self::getFieldsString($conditions, $placeholders);
 
         $sql = "UPDATE {$table_name} SET {$fieldsString} WHERE {$whereFields};";
 
-        return $this->getInsertOrUpdateResult($this->connection, $sql, $placeholders, true);
+        return self::getInsertOrUpdateResult(self::$connection, $sql, $placeholders, true);
     }
 
     /**
@@ -120,9 +127,9 @@ class Db {
      * @param bool $update
      * @return bool|int
      */
-    private function getInsertOrUpdateResult(string $sql, array $placeholders = [], $update = true)
+    static private function getInsertOrUpdateResult(string $sql, array $placeholders = [], $update = true)
     {
-        $prepared_sql = $this->get_prepare_stmt($sql, $placeholders);
+        $prepared_sql = self::get_prepare_stmt($sql, $placeholders);
         if (!$prepared_sql) {
             return false;
         }
@@ -130,9 +137,9 @@ class Db {
         mysqli_stmt_execute($prepared_sql);
 
         if ($update) {
-            $idOrCount = mysqli_affected_rows($this->connection);
+            $idOrCount = mysqli_affected_rows(self::$connection);
         } else {
-            $idOrCount = mysqli_insert_id($this->connection);
+            $idOrCount = mysqli_insert_id(self::$connection);
         }
 
         mysqli_stmt_close($prepared_sql);
@@ -149,7 +156,7 @@ class Db {
      * @param array $placeholders
      * @return string
      */
-    private function getFieldsString($data = [], array &$placeholders): string
+    static private function getFieldsString($data = [], array &$placeholders): string
     {
         $fields = [];
 

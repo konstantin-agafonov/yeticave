@@ -1,30 +1,12 @@
 <?php
 
-spl_autoload_register(function ($class_name) {
-    include "classes/" . $class_name . '.php';
+spl_autoload_register(function ($class){
+    $root = __DIR__;
+    $file = $root . '/classes/' . str_replace('\\','/',$class) . '.php';
+    if (is_readable($file)) {
+        require $file;
+    }
 });
-
-/*function getSubarrayValueByAnotherValue(array $array,$searched_key,$searched_value,$key2get) {
-    foreach ($array as $sub_array) {
-        if (isset($sub_array[$searched_key]) && isset($sub_array[$key2get])) {
-            if ($sub_array[$searched_key] === $searched_value) {
-                return $sub_array[$key2get];
-            }
-        }
-    }
-    return null;
-}*/
-
-/*function getSubarrayByElementValue(array $array,$searched_key,$searched_value) {
-    foreach ($array as $sub_array) {
-        if (isset($sub_array[$searched_key])) {
-            if ($sub_array[$searched_key] === $searched_value) {
-                return $sub_array;
-            }
-        }
-    }
-    return null;
-}*/
 
 function includeTemplate(string $path2template = null, array $data = null) : string
 {

@@ -2,14 +2,17 @@
 
 require_once 'config.php';
 
-$user = new User($db);
+use Core\User;
+use Core\Db;
 
-if (!$user->logged_in) {
+$user = new User('Db');
+
+if (!$user->isLoggedIn()) {
     header("HTTP/1.1 403 Forbidden");
     die("Страница доступна только для зарегистрированных пользователей!");
 }
 
-$stakes = $db->select(
+$stakes = Db::select(
 <<< EOD
 select  stakes.*,
         lots.pic as lot_pic,
@@ -20,7 +23,7 @@ left join lots on stakes.lot_id = lots.id
 left join categories on lots.category_id = categories.id
 where user_id = ?;
 EOD
-    ,[$user->user_id]
+    ,[$user->getUserId()]
 );
 
 echo includeTemplate('templates/header.php',[

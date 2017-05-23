@@ -2,7 +2,9 @@
 
 require_once 'config.php';
 
-$user = new User($db);
+use Core\User;
+
+$user = new User('Db');
 
 // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
 $lot_time_remaining = "00:00";
@@ -16,7 +18,7 @@ $now = time();
 // далее нужно вычислить оставшееся время до начала следующих суток и записать его в переменную $lot_time_remaining
 $lot_time_remaining = date("H:i", $tomorrow + ($tomorrow - $now));
 
-$lots = $db->select(
+$lots = \Core\Db::select(
 <<< EOD
 select  lots.*,
         categories.name as category_name

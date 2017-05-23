@@ -19,19 +19,19 @@
             <input class="main-header__search-btn" type="submit" name="find" value="Найти">
         </form>
 
-        <?php if ($data['user']->logged_in): ?>
+        <?php if ($data['user']->isLoggedIn()): ?>
             <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
         <?php endif; ?>
 
         <nav class="user-menu">
 
-            <?php if ($data['user']->logged_in): ?>
+            <?php if ($data['user']->isLoggedIn()): ?>
 
                 <div class="user-menu__image">
-                    <img src="uploads/<?= $data['user']->user_avatar; ?>" width="40" height="40" alt="Пользователь">
+                    <img src="uploads/<?= $data['user']->getUserAvatar(); ?>" width="40" height="40" alt="Пользователь">
                 </div>
                 <div class="user-menu__logged">
-                    <p><a href="mylots.php"><?= $data['user']->user_name; ?></a></p>
+                    <p><a href="mylots.php"><?= $data['user']->getUserName(); ?></a></p>
                     <a href="logout.php">Выйти</a>
                 </div>
 

@@ -2,9 +2,11 @@
 
 require_once 'config.php';
 
-$user = new User($db);
+use Core\User;
 
-if (!$user->logged_in) {
+$user = new User('Db');
+
+if (!$user->isLoggedIn()) {
     header("HTTP/1.1 403 Forbidden");
     die("Страница доступна ТОЛЬКО для зарегистрированных пользователей!");
 }
@@ -136,7 +138,19 @@ if ($_POST && $form_validated){
     $dtime = DateTime::createFromFormat("d.m.Y", $fields['lot-date']['value']);
     $timestamp = $dtime->format("Y-m-d H:i:s");
 
-    $new_lot_id = $db->insert(
+    $new_lot = new \ActiveRecord\Record\LotRecord('Core\Db',[
+        'pic'           => '../uploads/' . $file['name'],
+        'name'          => $fields['lot-name']['value'],
+        'description'   => $fields['message']['value'],
+        'start_price'   => (float)$fields['lot-rate']['value'],
+        'end_date'      => $timestamp,
+        'stake_step'    => (float)$fields['lot-step']['value'],
+        'author_id'     => $user->getUserId(),
+        'category_id'   => $fields['category']['value']
+    ],true);
+
+
+    $new_lot_id = $new_lot->save();/*$db->insert(
 <<< EOD
 insert into lots (
      pic,
@@ -158,7 +172,7 @@ EOD
                 (float)$fields['lot-step']['value'],
                 $user->user_id,
                 $fields['category']['value']
-    ]);
+    ]);*/
 
     if ($new_lot_id) {
 

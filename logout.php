@@ -2,8 +2,8 @@
 
 require_once 'config.php';
 
-$user = new User($db);
+$user = new Core\User('Db');
 
-if ($user->logged_in) {
+if ($user->isLoggedIn()) {
     $user->logout();
 }

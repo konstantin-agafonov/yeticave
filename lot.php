@@ -2,21 +2,17 @@
 
 require_once 'config.php';
 
-$user = new User($db);
+use Core\Db;
+use Core\User;
+use ActiveRecord\Finder\LotFinder;
+
+$user = new User('Db');
 
 if (isset($_GET['id']) && ($_GET['id'] != '')) {
 
     $lot_id = (int)$_GET['id'];
-    $lot = $db->select(
-<<< EOD
-select  lots.*,
-        categories.name as category_name
-from    lots
-        left join categories on lots.category_id = categories.id
-where   lots.id= ?;
-EOD
-,[$lot_id]
-    );
+
+    $lot = LotFinder::findById($lot_id);
 
     if (!$lot) {
         header('HTTP/1.1 404 Not Found');
@@ -76,29 +72,22 @@ if ($_POST) {
 
 if ($_POST && $form_validated) {
 
-    $lot = $db->select(
-<<< EOD
-select  lots.*,
-        categories.name as category_name
-from    lots
-        left join categories on lots.category_id = categories.id
-where   lots.id = ?;
-EOD
-        ,[$fields['lot_id']['value']]
-    );
+    $lot = LotFinder::findById($fields['lot_id']['value']);
 
-    $new_stake_id = $db->insert('insert into stakes (stake_sum,user_id,lot_id) values (?,?,?);',[
-        $fields['cost']['value'],
-        $user->user_id,
-        $fields['lot_id']['value']
-    ]);
+    $new_stake = new \ActiveRecord\Record\StakeRecord('Core\Db',[
+        'stake_sum' => $fields['cost']['value'],
+        'user_id'   => $user->getUserId(),
+        'lot_id'    => $fields['lot_id']['value']
+    ],true);
+
+    $new_stake_id = $new_stake->save();
 
 }
 
 if (isset($lot) && $lot !== false) {
 
     // ставки пользователей, которыми надо заполнить таблицу
-    $stakes = $db->select(
+    $stakes = Db::select(
 <<< EOD
 select  stakes.*,
         users.name as user_name
@@ -113,7 +102,7 @@ EOD
 
     if ($stakes) {
         foreach ($stakes as $stake) {
-            if ($stake['user_id'] == $user->user_id) {
+            if ($stake['user_id'] == $user->getUserId()) {
                 $have_stake = true;
                 break;
             }
@@ -121,8 +110,6 @@ EOD
     } else {
         $stakes = [];
     }
-
-    $lot = $lot[0];
 
     echo includeTemplate('templates/header.php',[
         'user' => $user

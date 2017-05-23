@@ -2,6 +2,8 @@
 
 require_once 'config.php';
 
+use Core\User;
+
 $form_validated = true;
 
 $fields = [
@@ -52,9 +54,9 @@ if ($_POST) {
 
     if ($form_validated) {
 
-        $user = new User($db,$fields['email']['value'],$fields['password']['value']);
+        $user = new User('Db',$fields['email']['value'],$fields['password']['value']);
 
-        if (!$user->logged_in) {
+        if (!$user->isLoggedIn()) {
             $form_validated = false;
         }
 
@@ -63,17 +65,17 @@ if ($_POST) {
 }
 
 echo includeTemplate('templates/header.php',[
-    'user' => $user
+    'user' => isset($user) ? $user : new User('Db')
 ]);?>
 
 <?=includeTemplate('templates/login.php',[
     'fields' => $fields,
     'form_validated' => $form_validated,
-    'user_validated' => isset($user) ? $user->logged_in : true,
+    'user_validated' => isset($user) ? $user->isLoggedIn() : true,
     'categories' => $categories
 ]);?>
 
 <?=includeTemplate('templates/footer.php',[
     'categories' => $categories,
-    'user' => $user
+    'user' => isset($user) ? $user : new User('Db')
 ]);?>

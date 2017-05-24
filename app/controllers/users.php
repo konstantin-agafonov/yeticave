@@ -15,7 +15,7 @@ class Users extends \Core\Controller
     public function loginAction()
     {
 
-        $categories = Db::select('select id,name from categories;');
+        $categories = \App\Models\Categories::selectAll();
 
         $form_validated = true;
 
@@ -98,28 +98,21 @@ class Users extends \Core\Controller
     public function mylotsAction()
     {
 
-        $categories = Db::select('select id,name from categories;');
+        $categories = \App\Models\Categories::selectAll();
 
         $user = new User('Db');
 
         if (!$user->isLoggedIn()) {
             header("HTTP/1.1 403 Forbidden");
-            die("Страница доступна только для зарегистрированных пользователей!");
+            View::render('home/error.php',[
+                'categories' => $categories,
+                'user' => $user,
+                'message' => '<p>Страница доступна только для зарегистрированных пользователей! <a href="/">На главную</a></p>'
+            ]);
+            die();
         }
 
-        $stakes = Db::select(
-<<< EOD
-select  stakes.*,
-        lots.pic as lot_pic,
-        lots.name as lot_name,
-        categories.name as category_name
-from stakes
-left join lots on stakes.lot_id = lots.id
-left join categories on lots.category_id = categories.id
-where user_id = ?;
-EOD
-            ,[$user->getUserId()]
-        );
+        $stakes = \App\Models\Stakes::selectByUserId($user->getUserId());
 
         View::render('users/mylots.php',[
             'stakes' => $stakes,
@@ -131,7 +124,7 @@ EOD
 
     public function signupAction()
     {
-        $categories = Db::select('select id,name from categories;');
+        $categories = \App\Models\Categories::selectAll();
 
         $user = new User('Db');
 

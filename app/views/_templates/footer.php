@@ -29,7 +29,7 @@
         </div>
 
         <?php if ($data['user']->isLoggedIn()): ?>
-            <a class="main-footer__add-lot button" href="add.php">Добавить лот</a>
+            <a class="main-footer__add-lot button" href="/lot/add">Добавить лот</a>
         <?php endif; ?>
 
         <div class="main-footer__developed-by">

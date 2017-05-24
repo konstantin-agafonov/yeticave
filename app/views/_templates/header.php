@@ -21,7 +21,7 @@
         </form>
 
         <?php if ($data['user']->isLoggedIn()): ?>
-            <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
+            <a class="main-header__add-lot button" href="/lot/add">Добавить лот</a>
         <?php endif; ?>
 
         <nav class="user-menu">

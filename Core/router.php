@@ -62,7 +62,15 @@ class Router {
                 echo "Controller class $controller not found";
             }
         } else {
-            echo "No route matched";
+
+            header('HTTP/1.1 404 Not Found');
+            View::render('home/error.php',[
+                'categories' => \App\Models\Categories::selectAll(),
+                'user' => new User('Core\Db'),
+                'message' => '<p>No route matched! <a href="/">На главную</a></p>'
+            ]);
+            die();
+
         }
     }
 

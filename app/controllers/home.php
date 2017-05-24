@@ -14,7 +14,7 @@ class Home extends \Core\Controller
 
         $user = new User('Db');
 
-        $categories = Db::select('select id,name from categories;');
+        $categories = \App\Models\Categories::selectAll();
 
         // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
         $lot_time_remaining = "00:00";
@@ -28,15 +28,7 @@ class Home extends \Core\Controller
         // далее нужно вычислить оставшееся время до начала следующих суток и записать его в переменную $lot_time_remaining
         $lot_time_remaining = date("H:i", $tomorrow + ($tomorrow - $now));
 
-        $lots = Db::select(
-<<< EOD
-select  lots.*,
-        categories.name as category_name
-from    lots
-        left join categories on lots.category_id = categories.id;
-EOD
-        );
-
+        $lots = \App\Models\Lot::selectAll();
 
         View::render('home/index.php',[
             'user' => $user,

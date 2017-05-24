@@ -4,7 +4,7 @@
         'categories' => $data['categories']
     ]); ?>
 
-    <form class="form form--add-lot container <?= $data['form_validated'] ? '' : ' form--invalid'; ?>" action="add.php"
+    <form class="form form--add-lot container <?= $data['form_validated'] ? '' : ' form--invalid'; ?>"
           method="post" enctype="multipart/form-data"> <!-- form--invalid -->
 
         <h2>Добавление лота</h2>

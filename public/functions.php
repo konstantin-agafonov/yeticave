@@ -1,12 +1,12 @@
 <?php
 
-spl_autoload_register(function ($class){
+/*spl_autoload_register(function ($class){
     $root = dirname(__DIR__);
     $file = $root . '/' . str_replace('\\','/',$class) . '.php';
     if (is_readable($file)) {
         require $file;
     }
-});
+});*/
 
 function includeTemplate(string $path2template = null, array $data = null) : string
 {

@@ -5,13 +5,12 @@ namespace Yeticave\App\Controllers;
 use Yeticave\Core\View;
 use Yeticave\Core\User;
 use Yeticave\Core\Controller;
-use Yeticave\Core\Db;
 use Yeticave\Core\ActiveRecord\Finder\LotFinder;
 use Yeticave\Core\ActiveRecord\Record\StakeRecord;
 use Yeticave\Core\ActiveRecord\Record\LotRecord;
 use Yeticave\App\Models\Categories;
 use Yeticave\App\Models\Stakes;
-
+use Respect\Validation\Validator as v;
 
 class Lot extends Controller
 {
@@ -39,54 +38,18 @@ class Lot extends Controller
 
         $form_validated = true;
 
-        $fields = [
-            "lot_id" => [
-                'value' => null,
-                'filter' => FILTER_VALIDATE_INT,
-                'filter_options' => null,
-                'validated' => true,
-                'error' => null
-            ],
-            "cost" => [
-                'value' => null,
-                'filter' => FILTER_SANITIZE_NUMBER_FLOAT,
-                'filter_options' => [
-                    'flags' => FILTER_FLAG_ALLOW_FRACTION
-                ],
-                'validated' => true,
-                'error' => null
-            ],
-        ];
+        if (!empty($_POST)) {
 
-        if ($_POST) {
+            $fields = [
+                "lot_id" => ['v' => v::intVal()->notEmpty()->positive()->setName('category') ],
+                "cost" =>   ['v' => v::floatVal()->notEmpty()->positive()->setName('lot-rate') ],
+            ];
 
-            foreach ($fields as $field_name => &$field) {
-                $field['value'] = trim($_POST[$field_name]);
-                $field['value'] = filter_var(
-                    $field['value'],
-                    $field['filter'] ? $field['filter'] : FILTER_DEFAULT,
-                    $field['filter_options']
-                );
-                if ($field['value'] === false || (string)$field['value'] == '') {
-                    $field['error'] = 'Введено некорректное значение';
-                    $field['validated'] = false;
-                }
-            }
-            unset($field);
-
-            if ($form_validated) {
-                foreach ($fields as &$field) {
-                    if (!$field['validated']) {
-                        $form_validated = false;
-                        break;
-                    }
-                }
-                unset($field);
-            }
+            $this->validateFormFields($fields,$form_validated);
 
         }
 
-        if ($_POST && $form_validated) {
+        if (!empty($_POST) && $form_validated) {
 
             $lot = LotFinder::findById($fields['lot_id']['value']);
 
@@ -158,127 +121,26 @@ class Lot extends Controller
 
         $form_validated = true;
 
-        $fields = [
-            "lot-name" => [
-                'value' => null,
-                'filter' => FILTER_SANITIZE_STRING,
-                'filter_options' => null,
-                'validated' => true,
-                'error' => null
-            ],
-            "category" => [
-                'value' => null,
-                'filter' => FILTER_VALIDATE_INT,
-                'filter_options' => null,
-                'validated' => true,
-                'error' => null
-            ],
-            "message" => [
-                'value' => null,
-                'filter' => FILTER_SANITIZE_STRING,
-                'filter_options' => null,
-                'validated' => true,
-                'error' => null
-            ],
-            "lot-rate" => [
-                'value' => null,
-                'filter' => FILTER_SANITIZE_NUMBER_FLOAT,
-                'filter_options' => [
-                    'flags' => FILTER_FLAG_ALLOW_FRACTION
-                ],
-                'validated' => true,
-                'error' => null
-            ],
-            "lot-step" => [
-                'value' => null,
-                'filter' => FILTER_SANITIZE_NUMBER_FLOAT,
-                'filter_options' => [
-                    'flags' => FILTER_FLAG_ALLOW_FRACTION
-                ],
-                'validated' => true,
-                'error' => null
-            ],
-            "lot-date" => [
-                'value' => null,
-                'filter' => FILTER_SANITIZE_STRING,
-                'filter_options' => null,
-                'validated' => true,
-                'error' => null
-            ],
-        ];
+        if (!empty($_POST)) {
 
-        if ($_POST) {
+            $fields = [
+                "lot-name" =>   ['v' => v::stringType()->length(5,100)->notEmpty()->setName('lot-name') ],
+                "category" =>   ['v' => v::intVal()->notEmpty()->positive()->setName('category') ],
+                "message" =>    ['v' => v::stringType()->length(5,1000)->notEmpty()->setName('message') ],
+                "lot-rate" =>   ['v' => v::floatVal()->notEmpty()->positive()->setName('lot-rate') ],
+                "lot-step" =>   ['v' => v::floatVal()->notEmpty()->positive()->setName('lot-step') ],
+                "lot-date" =>   ['v' => v::date('d.m.Y')->notEmpty()->setName('lot-date') ],
+            ];
 
-            foreach ($fields as $field_name => &$field) {
-                if (!isset($_POST[$field_name]) || $_POST[$field_name] == '') {
-                    $field['error'] = 'Поле должно быть заполнено';
-                    $field['validated'] = false;
-                    continue;
-                } else {
-                    $field['value'] = trim($_POST[$field_name]);
-                }
-                $field['value'] = filter_var(
-                    $field['value'],
-                    $field['filter'] ? $field['filter'] : FILTER_DEFAULT,
-                    $field['filter_options']
-                );
-                if ($field['value'] === false || (string)$field['value'] == '') {
-                    $field['error'] = 'Введено некорректное значение';
-                    $field['validated'] = false;
-                }
-            }
-            unset($field);
+            $this->validateFormFields($fields,$form_validated);
 
-            if ($fields['lot-rate']['validated']) {
-                if ($fields['lot-rate']['value'] == 0.00 ) {
-                    $fields['lot-rate']['validated'] = false;
-                    $fields['lot-rate']['error'] = 'Поле должно быть заполнено';
-                }
-            }
-            if ($fields['lot-step']['validated']) {
-                if ($fields['lot-step']['value'] == 0.00 ) {
-                    $fields['lot-step']['validated'] = false;
-                    $fields['lot-step']['error'] = 'Поле должно быть заполнено';
-                }
-            }
+            $file = [];
 
-            if ($fields['lot-date']['validated']) {
-                $test_date = explode('.', $fields['lot-date']['value']);
-                if (!checkdate($test_date[1], $test_date[0], $test_date[2])) {
-                    $fields['lot-date']['validated'] = false;
-                    $fields['lot-date']['error'] = 'Введено некорректное значение';
-                }
-            }
-
-            if (isset($_FILES['photo']) && !$_FILES['photo']['error']) {
-                if (in_array($_FILES['photo']['type'],['image/jpeg','image/png'])) {
-                    $file['name'] = basename($_FILES['photo']['name']);
-                    $file['path'] = $_SERVER["DOCUMENT_ROOT"] . '\public\uploads\\' . $file['name'];
-                    if (!move_uploaded_file($_FILES['photo']['tmp_name'],$file['path'])) {
-                        $file['error'] = 'Ошибка при загрузке картинки';
-                        $form_validated = false;
-                    }
-                } else {
-                    $file['error'] = 'Картинка должна быть в формате jpeg или png';
-                    $form_validated = false;
-                }
-            } else {
-                $file['error'] = 'Картинка должна быть загружена';
-                $form_validated = false;
-            }
-
-            if ($form_validated) {
-                foreach ($fields as $field) {
-                    if (!$field['validated']) {
-                        $form_validated = false;
-                        break;
-                    }
-                }
-            }
+            $this->validatePhotoUpload($file,$form_validated);
 
         }
 
-        if ($_POST && $form_validated){
+        if (!empty($_POST) && $form_validated) {
 
             $dtime = \DateTime::createFromFormat("d.m.Y", $fields['lot-date']['value']);
             $timestamp = $dtime->format("Y-m-d H:i:s");
@@ -316,10 +178,9 @@ class Lot extends Controller
             View::render('lot/add.php',[
                 'categories' => $categories,
                 'form_validated' => $form_validated,
-                'fields' => $fields,
+                'fields' => isset($fields) ? $fields : null,
                 'file' => isset($file) ? $file : null,
-                'user' => $user,
-                'message' => '<p>Ошибка при обработке формы! <a href="/">На главную</a></p>'
+                'user' => $user
             ]);
 
         }

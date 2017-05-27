@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>Главная</title>
     <link href="http://<?=$_SERVER['SERVER_NAME'];?>/public/css/normalize.min.css" rel="stylesheet">
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
     <link href="http://<?=$_SERVER['SERVER_NAME'];?>/public/css/style.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="http://<?=$_SERVER['SERVER_NAME'];?>/public/js/script.js"></script>
 </head>
 <body>

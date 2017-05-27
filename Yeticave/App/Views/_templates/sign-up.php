@@ -1,6 +1,6 @@
 <main>
     <?php
-    echo includeTemplate('templates/header-nav.php', [
+    echo includeTemplate('../Yeticave/App/Views/_templates/header-nav.php', [
         'categories' => $data['categories']
     ]);
     ?>
@@ -9,40 +9,76 @@
 
         <h2>Регистрация нового аккаунта</h2>
 
-        <div class="form__item <?= $data['fields']['email']['validated'] ? '' : 'form__item--invalid'; ?>"> <!-- form__item--invalid -->
+        <div class="form__item <?= isset($data['fields']['email']['errors']) ? 'form__item--invalid' : ''; ?>"> <!-- form__item--invalid -->
             <label for="email">E-mail*</label>
             <input id="email" type="text" name="email" placeholder="Введите e-mail"
-                   value="<?= $data['fields']['email']['validated'] ? $data['fields']['email']['value'] : ''; ?>">
-            <span class="form__error">
-                    <?= $data['fields']['email']['validated'] ? '' : $data['fields']['email']['error']; ?>
-            </span>
+                   value="<?= $data['fields']['email']['value'] ? $data['fields']['email']['value'] : ''; ?>">
+
+            <?php
+            if (isset($data['fields']['email']['errors'])) {
+                foreach ($data['fields']['email']['errors'] as $error) { ?>
+
+                    <span class="form__error">
+                            <?=$error;?>
+                        </span>
+
+                <?php }
+            } ?>
+
         </div>
 
-        <div class="form__item <?= $data['fields']['password']['validated'] ? '' : 'form__item--invalid'; ?>">
+        <div class="form__item <?= $data['fields']['password']['errors'] ? 'form__item--invalid' : ''; ?>">
             <label for="password">Пароль*</label>
             <input id="password" type="password" name="password" placeholder="Введите пароль">
-            <span class="form__error">
-                    <?= $data['fields']['password']['validated'] ? '' : $data['fields']['password']['error']; ?>
-            </span>
+
+            <?php
+            if (isset($data['fields']['password']['errors'])) {
+                foreach ($data['fields']['password']['errors'] as $error) { ?>
+
+                    <span class="form__error">
+                        <?=$error;?>
+                    </span>
+
+                <?php }
+            } ?>
+
         </div>
 
-        <div class="form__item <?= $data['fields']['name']['validated'] ? '' : 'form__item--invalid'; ?>">
+        <div class="form__item <?= $data['fields']['name']['errors'] ? 'form__item--invalid' : ''; ?>">
             <label for="name">Имя*</label>
             <input id="name" type="text" name="name" placeholder="Введите имя"
-                   value="<?= $data['fields']['name']['validated'] ? $data['fields']['name']['value'] : ''; ?>">
-            <span class="form__error">
-                    <?= $data['fields']['name']['validated'] ? '' : $data['fields']['name']['error']; ?>
-            </span>
+                   value="<?= $data['fields']['name']['value'] ? $data['fields']['name']['value'] : ''; ?>">
+
+            <?php
+            if (isset($data['fields']['name']['errors'])) {
+                foreach ($data['fields']['name']['errors'] as $error) { ?>
+
+                    <span class="form__error">
+                            <?=$error;?>
+                        </span>
+
+                <?php }
+            } ?>
+
         </div>
 
-        <div class="form__item <?= $data['fields']['contacts']['validated'] ? '' : 'form__item--invalid'; ?>">
+        <div class="form__item <?= $data['fields']['contacts']['errors'] ? 'form__item--invalid' : ''; ?>">
             <label for="message">Контактные данные*</label>
             <textarea id="contacts" name="contacts" placeholder="Напишите как с вами связаться"><?=
-                $data['fields']['contacts']['validated'] ? $data['fields']['contacts']['value'] : '';
+                $data['fields']['contacts']['value'] ? $data['fields']['contacts']['value'] : '';
                 ?></textarea>
-            <span class="form__error">
-                    <?= $data['fields']['contacts']['validated'] ? '' : $data['fields']['contacts']['error']; ?>
-            </span>
+
+            <?php
+            if (isset($data['fields']['contacts']['errors'])) {
+                foreach ($data['fields']['contacts']['errors'] as $error) { ?>
+
+                    <span class="form__error">
+                            <?=$error;?>
+                        </span>
+
+                <?php }
+            } ?>
+
         </div>
 
         <div class="form__item form__item--file form__item--last">
@@ -68,7 +104,7 @@
 
         <button type="submit" class="button">Зарегистрироваться</button>
 
-        <a class="text-link" href="login.php">Уже есть аккаунт</a>
+        <a class="text-link" href="/users/login">Уже есть аккаунт</a>
 
     </form>
 </main>

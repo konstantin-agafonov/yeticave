@@ -9,11 +9,11 @@ class View
     {
         extract($args,EXTR_SKIP);
 
-        $file = "../Yeticave/App/Views/$view";
-        if (is_readable($file)) {
-            require $file;
+        $file2require = "../Yeticave/App/Views/$view";
+        if (is_readable($file2require)) {
+            require $file2require;
         } else {
-            echo "$file not found";
+            echo "$file2require not found";
         }
     }
 

@@ -40,4 +40,22 @@ EOD
 
     }
 
+    public static function searchSuggest(string $searchString)
+    {
+        $search_param = '%'.$searchString.'%';
+
+        $lots = Db::select(
+            <<< EOD
+select    lots.name
+from      lots
+where     lots.name like ?
+order by  lots.name
+limit     10;
+EOD
+            ,[$search_param]);
+
+        return $lots;
+
+    }
+
 }

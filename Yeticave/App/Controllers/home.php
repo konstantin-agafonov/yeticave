@@ -93,4 +93,27 @@ class Home extends Controller
 
     }
 
+    public function searchSuggestAction()
+    {
+        if ($this->route_params['searchstring']) {
+
+            $lots = Lot::searchSuggest($this->route_params['searchstring']);
+
+            If ($lots) {
+
+                $result = [];
+                foreach ($lots as $lot) {
+                    $result[] = $lot['name'];
+                }
+
+                header("Content-type: application/json");
+                echo json_encode($result,JSON_PRETTY_PRINT);
+                exit();
+
+            }
+
+        }
+
+    }
+
 }

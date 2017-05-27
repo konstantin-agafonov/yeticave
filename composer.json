@@ -8,7 +8,9 @@
             "email": "konstantin.agafonov@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "respect/validation": "^1.1"
+    },
     "autoload": {
         "psr-4": {
             "Yeticave\\": "Yeticave/"

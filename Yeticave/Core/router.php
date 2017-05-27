@@ -2,6 +2,8 @@
 
 namespace Yeticave\Core;
 
+use Yeticave\App\Models\Categories;
+
 class Router {
 
     protected $routes = [];
@@ -65,7 +67,7 @@ class Router {
 
             header('HTTP/1.1 404 Not Found');
             View::render('home/error.php',[
-                'categories' => Yeticave\App\Models\Categories::selectAll(),
+                'categories' => Categories::selectAll(),
                 'user' => new User('Core\Db'),
                 'message' => '<p>No route matched! <a href="/">На главную</a></p>'
             ]);

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once '../vendor/autoload.php';
+
 require_once "functions.php";
 
 error_reporting(E_ALL);
@@ -21,7 +23,7 @@ define('DB_PASS','9UNmULQIcWOVKSqp');
 define('DB_HOST','localhost');
 define('DB_USER','yeticave');
 
-use Core\Db;
+use Yeticave\Core\Db;
 Db::init();
 
 session_start();

@@ -1,8 +1,10 @@
 <?php
 
+require_once '../vendor/autoload.php';
+
 require_once 'config.php';
 
-$router = new Core\Router();
+$router = new Yeticave\Core\Router();
 
 $router->addRoute('',['controller'=>'home','action'=>'index']);
 $router->addRoute('{controller}/{action}');

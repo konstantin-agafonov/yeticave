@@ -12,10 +12,7 @@ error_reporting(E_ALL);
 date_default_timezone_set('Europe/Moscow');
 
 // default date format
-define('DDF','d-m-Y H:i:s');
-
-//site domain
-define('','d-m-Y H:i:s');
+/*define('DDF','d-m-Y H:i:s');*/
 
 // db connection
 define('DB_NAME','yeticave');

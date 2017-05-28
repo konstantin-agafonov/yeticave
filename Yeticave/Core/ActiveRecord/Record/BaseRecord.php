@@ -2,8 +2,6 @@
 
 namespace Yeticave\Core\ActiveRecord\Record;
 
-use Yeticave\Core\Db;
-
 abstract class BaseRecord
 {
     protected $tableName = null;

@@ -2,6 +2,8 @@
 
 namespace Yeticave\Core;
 
+use Respect\Validation\Exceptions\NestedValidationException;
+
 abstract class Controller {
 
     protected $route_params = [];
@@ -17,7 +19,6 @@ abstract class Controller {
 
         if (method_exists($this,$method)) {
             if ($this->before() !== false) {
-                file_put_contents(__DIR__ . '/log.txt', $method . PHP_EOL,FILE_APPEND);
                 call_user_func_array([$this,$method],$args);
                 $this->after();
             }
@@ -36,5 +37,43 @@ abstract class Controller {
 
     }
 
+    public function validateFormFields(array &$fields,bool &$form_validated)
+    {
+        foreach($_POST as $key => $value) {
+            if (array_key_exists($key,$fields)) {
+                try {
+                    /**
+                     * @var Validator $var
+                     */
+                    $fields[$key]['value'] = trim($value);
+                    $var = $fields[$key]['v'];
+                    $var->assert($fields[$key]['value']);
+                } catch (NestedValidationException $e) {
+                    $form_validated = false;
+                    $fields[$key]['errors'] = $e->getMessages();
+                }
+            }
+        }
+    }
+
+    public function validatePhotoUpload(array &$file,bool &$form_validated)
+    {
+        if (isset($_FILES['photo']) && !$_FILES['photo']['error']) {
+            if (in_array($_FILES['photo']['type'],['image/jpeg','image/png'])) {
+                $file['name'] = basename($_FILES['photo']['name']);
+                $file['path'] = $_SERVER["DOCUMENT_ROOT"] . '\public\uploads\\' . $file['name'];
+                if (!move_uploaded_file($_FILES['photo']['tmp_name'],$file['path'])) {
+                    $file['error'] = 'Ошибка при загрузке картинки';
+                    $form_validated = false;
+                }
+            } else {
+                $file['error'] = 'Картинка должна быть в формате jpeg или png';
+                $form_validated = false;
+            }
+        } else {
+            $file['error'] = 'Картинка должна быть загружена';
+            $form_validated = false;
+        }
+    }
 
 }

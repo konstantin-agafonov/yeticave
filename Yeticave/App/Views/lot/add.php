@@ -3,6 +3,7 @@
 echo includeTemplate('../Yeticave/App/Views/_templates/header.php',[
     'user' => $user
 ]);
+
 echo includeTemplate('../Yeticave/App/Views/_templates/add-lot.php',[
     'categories' => $categories,
     'form_validated' => $form_validated,

@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <title>Главная</title>
     <link href="http://<?=$_SERVER['SERVER_NAME'];?>/public/css/normalize.min.css" rel="stylesheet">
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
     <link href="http://<?=$_SERVER['SERVER_NAME'];?>/public/css/style.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="http://<?=$_SERVER['SERVER_NAME'];?>/public/js/script.js"></script>
 </head>
 <body>
 
@@ -15,8 +19,8 @@
             <img src="http://<?=$_SERVER['SERVER_NAME'];?>/public/img/logo.svg" width="160" height="39"
                  alt="Логотип компании YetiCave">
         </a>
-        <form class="main-header__search" method="get" action="https://echo.htmlacademy.ru">
-            <input type="search" name="search" placeholder="Поиск лота">
+        <form class="main-header__search">
+            <input type="search" name="search_string" placeholder="Поиск лота">
             <input class="main-header__search-btn" type="submit" name="find" value="Найти">
         </form>
 

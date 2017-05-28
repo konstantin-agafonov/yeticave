@@ -4,14 +4,11 @@ namespace Yeticave\App\Controllers;
 
 use Yeticave\Core\View;
 use Yeticave\Core\Controller;
-use Yeticave\Core\Model;
 use Yeticave\Core\User;
-use Yeticave\Core\Db;
 use Yeticave\Core\ActiveRecord\Record\UserRecord;
-use Yeticave\Core\ActiveRecord\Finder\UserFinder;
 use Yeticave\App\Models\Categories;
 use Yeticave\App\Models\Stakes;
-
+use Respect\Validation\Validator as v;
 
 class Users extends Controller
 {
@@ -23,66 +20,23 @@ class Users extends Controller
 
         $form_validated = true;
 
-        $fields = [
-            "email" => [
-                'value' => null,
-                'filter' => FILTER_VALIDATE_EMAIL,
-                'validated' => true,
-                'error' => null
-            ],
-            "password" => [
-                'value' => null,
-                'filter' => FILTER_SANITIZE_STRING,
-                'validated' => true,
-                'error' => null
-            ],
-        ];
+        if (!empty($_POST)) {
 
-        if ($_POST) {
+            $fields = [
+                "email" => ['v' => v::email()->notEmpty()->setName('email') ],
+                "password" => ['v' => v::stringType()->length(5,30)->notEmpty()->setName('password') ],
+            ];
 
-            foreach ($fields as $field_name => &$field) {
-                if (!isset($_POST[$field_name]) || $_POST[$field_name] == '') {
-                    $field['error'] = 'Поле должно быть заполнено';
-                    $field['validated'] = false;
-                    continue;
-                } else {
-                    $field['value'] = trim($_POST[$field_name]);
-                }
-                $field['value'] = filter_var(
-                    $field['value'],
-                    $field['filter'] ? $field['filter'] : FILTER_DEFAULT
-                );
-                if ($field['value'] === false || $field['value'] == '') {
-                    $field['error'] = 'Введено некорректное значение';
-                    $field['validated'] = false;
-                }
-            }
-            unset($field);
+            $this->validateFormFields($fields,$form_validated);
 
             if ($form_validated) {
-                foreach ($fields as &$field) {
-                    if (!$field['validated']) {
-                        $form_validated = false;
-                        break;
-                    }
-                }
-                unset($field);
-            }
-
-            if ($form_validated) {
-
                 $user = new User('Db',$fields['email']['value'],$fields['password']['value']);
-
-                if (!$user->isLoggedIn()) {
-                    $form_validated = false;
-                }
-
             }
 
         }
 
         View::render('users/login.php',[
-            'fields' => $fields,
+            'fields' => isset($fields) ? $fields : null,
             'form_validated' => $form_validated,
             'categories' => $categories,
             'user' => isset($user) ? $user : null
@@ -134,92 +88,28 @@ class Users extends Controller
 
         $form_validated = true;
 
-        $fields = [
-            "name" => [
-                'value' => null,
-                'filter' => FILTER_SANITIZE_STRING,
-                'filter_options' => null,
-                'validated' => true,
-                'error' => null
-            ],
-            "email" => [
-                'value' => null,
-                'filter' => FILTER_VALIDATE_EMAIL,
-                'filter_options' => null,
-                'validated' => true,
-                'error' => null
-            ],
-            "password" => [
-                'value' => null,
-                'filter' => FILTER_SANITIZE_STRING,
-                'filter_options' => null,
-                'validated' => true,
-                'error' => null
-            ],
-            "contacts" => [
-                'value' => null,
-                'filter' => FILTER_SANITIZE_STRING,
-                'filter_options' => null,
-                'validated' => true,
-                'error' => null
-            ],
-        ];
+        if (!empty($_POST)) {
 
-        if ($_POST) {
+            $fields = [
+                "name" =>   ['v' => v::stringType()->length(5,100)->notEmpty()->setName('name') ],
+                "email" => ['v' => v::email()->notEmpty()->setName('email') ],
+                "password" => ['v' => v::stringType()->length(5,30)->notEmpty()->setName('password') ],
+                "contacts" =>    ['v' => v::stringType()->length(5,1000)->notEmpty()->setName('contacts') ],
+            ];
 
-            foreach ($fields as $field_name => &$field) {
-                if (!isset($_POST[$field_name]) || $_POST[$field_name] == '') {
-                    $field['error'] = 'Поле должно быть заполнено';
-                    $field['validated'] = false;
-                    continue;
-                } else {
-                    $field['value'] = trim($_POST[$field_name]);
-                }
-                $field['value'] = filter_var(
-                    $field['value'],
-                    $field['filter'] ? $field['filter'] : FILTER_DEFAULT,
-                    $field['filter_options']
-                );
-                if ($field['value'] === false || (string)$field['value'] == '') {
-                    $field['error'] = 'Введено некорректное значение';
-                    $field['validated'] = false;
-                }
-            }
-            unset($field);
+            $this->validateFormFields($fields,$form_validated);
 
-            if (isset($_FILES['photo']) && !$_FILES['photo']['error']) {
-                if (in_array($_FILES['photo']['type'],['image/jpeg','image/png'])) {
-                    $file['name'] = basename($_FILES['photo']['name']);
-                    $file['path'] = $_SERVER["DOCUMENT_ROOT"] . '\public\uploads\\' . $file['name'];
-                    if (!move_uploaded_file($_FILES['photo']['tmp_name'],$file['path'])) {
-                        $file['error'] = 'Ошибка при загрузке картинки';
-                        $form_validated = false;
-                    }
-                } else {
-                    $file['error'] = 'Картинка должна быть в формате jpeg или png';
-                    $form_validated = false;
-                }
-            } else {
-                $file['error'] = 'Картинка должна быть загружена';
-                $form_validated = false;
-            }
+            $file = [];
 
-            if ($form_validated) {
-                foreach ($fields as $field) {
-                    if (!$field['validated']) {
-                        $form_validated = false;
-                        break;
-                    }
-                }
-            }
+            $this->validatePhotoUpload($file,$form_validated);
 
         }
 
-        if ($_POST && $form_validated){
+        if (!empty($_POST) && $form_validated){
 
             $new_pass_hash =  password_hash($fields['password']['value'], PASSWORD_DEFAULT);
 
-            $new_user = new /*\Core\ActiveRecord\Record\*/UserRecord('Core\Db',[
+            $new_user = new UserRecord('Yeticave\Core\Db',[
                 'email'     => $fields['email']['value'],
                 'name'      => $fields['name']['value'],
                 'contacts'  => $fields['contacts']['value'],
@@ -231,10 +121,7 @@ class Users extends Controller
 
             if ($new_user_id) {
 
-                View::render('users/signup_success.php',[
-                    'categories' => $categories,
-                    'user' => $user
-                ]);
+                $user = new User('Yeticave\Core\Db',$fields['email']['value'],$fields['password']['value']);
 
             }
 
@@ -243,7 +130,7 @@ class Users extends Controller
             View::render('users/signup.php', [
                 'categories' => $categories,
                 'user' => $user,
-                'fields' => $fields,
+                'fields' => isset($fields) ? $fields : null,
                 'form_validated' => $form_validated,
                 'file' => isset($file) ? $file : null
             ]);

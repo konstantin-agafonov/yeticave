@@ -1,6 +1,6 @@
 <main>
 
-    <?=includeTemplate('templates/header-nav.php',[
+    <?=includeTemplate('../Yeticave/App/Views/_templates/header-nav.php',[
         'categories' => $data['categories']
     ]);?>
 

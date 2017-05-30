@@ -1,3 +1,6 @@
+CREATE DATABASE `yeticave` CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `yeticave`;
+
 CREATE TABLE `yeticave`.`categories`
 (
 `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,

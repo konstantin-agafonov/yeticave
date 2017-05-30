@@ -1,17 +1,17 @@
 <?php
 
-echo includeTemplate('../Yeticave/App/Views/_templates/header.php',[
+echo includeTemplate('_templates/header.php',[
     'user' => $user
 ]);
 
-echo includeTemplate('../Yeticave/App/Views/_templates/sign-up.php', [
+echo includeTemplate('_templates/sign-up.php', [
     'categories' => $categories,
     'fields' => $fields,
     'form_validated' => $form_validated,
-    'file' => isset($file) ? $file : null
+    'file' => $file
 ]);
 
-echo includeTemplate('../Yeticave/App/Views/_templates/footer.php',[
+echo includeTemplate('_templates/footer.php',[
     'categories' => $categories,
     'user' => $user
 ]);

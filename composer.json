@@ -9,13 +9,18 @@
         }
     ],
     "require": {
-        "respect/validation": "^1.1"
+        "respect/validation": "^1.1",
+        "swiftmailer/swiftmailer": "@stable"
     },
     "autoload": {
         "psr-4": {
             "Yeticave\\": "Yeticave/"
-        }
+        },
+        "files": [
+            "public/helpers.php"
+        ]
     },
+
     "config": {
         "disable-tls": true
     }

@@ -1,7 +1,7 @@
 <footer class="main-footer">
 
-    <?=includeTemplate('../Yeticave/App/Views/_templates/header-nav.php',[
-            'categories' => $data['categories']
+    <?=includeTemplate('_templates/header-nav.php',[
+            'categories' => $categories
     ]);?>
 
     <div class="main-footer__bottom container">
@@ -28,7 +28,7 @@
             </a>
         </div>
 
-        <?php if ($data['user']->isLoggedIn()): ?>
+        <?php if ($user): ?>
             <a class="main-footer__add-lot button" href="/lot/add">Добавить лот</a>
         <?php endif; ?>
 

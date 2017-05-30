@@ -7,8 +7,8 @@
 
 **Обратите внимание на файлы:**
 
-- [Specification.md](Specification.md) — техническое задание для вашего проекта. Прочтите его и следуйте требованиям.
-- [Contributing.md](Contributing.md) — руководство по внесению изменений.
+- [Specification.md](_misc/Specification.md) — техническое задание для вашего проекта. Прочтите его и следуйте требованиям.
+- [Contributing.md](_misc/Contributing.md) — руководство по внесению изменений.
 
 --
 

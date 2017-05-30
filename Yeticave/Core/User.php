@@ -4,6 +4,7 @@ namespace Yeticave\Core;
 
 use Yeticave\Core\ActiveRecord\Finder\UserFinder;
 use Yeticave\Core\ActiveRecord\Record\UserRecord;
+use Yeticave\App\Models\Categories;
 
 class User {
 
@@ -15,13 +16,13 @@ class User {
     private $user_avatar;
     private $logged_in = false;
 
-    function __construct(string $dbClassName,string $email = null,string $password = null) {
+    function __construct(string $dbClassName,bool $isNew,string $email = null,string $password = null) {
 
         $this->db = $dbClassName;
 
         if ($email && $password) {
-            if ($authenticated_user = $this->authenticate($email,$password)) {
-                $this->login($authenticated_user);
+            if ($authenticated_user = $this->authenticate($email, $password)) {
+                $this->login($authenticated_user, $isNew);
             }
         } else {
             $this->checkIfLoggedIn();
@@ -29,7 +30,7 @@ class User {
 
     }
 
-    private function authenticate(string $email,string $password) {
+    private function authenticate(string $email, string $password) {
         $this->user_email = $email;
 
         $user_from_db = UserFinder::findByEmail($email);
@@ -42,15 +43,23 @@ class User {
         return false;
     }
 
-    private function login(UserRecord $user) {
+    private function login(UserRecord $user,bool $isNew) {
         $this->user_record = $user;
         $this->user_id = $_SESSION['auth']['user_id'] = $user->id_Field;
         $_SESSION['auth']['user_email'] = $user->email_Field;
         $this->user_name = $_SESSION['auth']['user_name'] = $user->name_Field;
         $this->user_avatar = $_SESSION['auth']['user_avatar'] = $user->avatar_Field;
         $this->logged_in = true;
-        header("Location: /");
-        exit();
+        if ($isNew) {
+            echo View::render('home/message.php', [
+                'categories' => Categories::selectAll(),
+                'user' => $this,
+                'message' => '<p>Пользователь успешно зарегистрирован! <a href="/">На главную</a></p>'
+            ]);
+        } else {
+            header("Location: /");
+        }
+        die();
     }
 
     private function checkIfLoggedIn() {

@@ -15,10 +15,9 @@ class UserFinder extends BaseFinder
     public static function findByEmail(string $email)
     {
         $record = Db::select('select * from ' . self::$tableName . ' where email= ?;',[$email]);
-        $record = $record[0];
         if ($record) {
             $className = 'Yeticave\Core\ActiveRecord\Record\\' . self::$entityName . 'Record';
-            $userRecord =  new $className('Db',$record,false);
+            $userRecord =  new $className('Db',$record[0],false);
             return $userRecord;
         }
         return false;

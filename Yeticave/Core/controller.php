@@ -3,6 +3,7 @@
 namespace Yeticave\Core;
 
 use Respect\Validation\Exceptions\NestedValidationException;
+use Respect\Validation\Validator;
 
 abstract class Controller {
 
@@ -19,8 +20,9 @@ abstract class Controller {
 
         if (method_exists($this,$method)) {
             if ($this->before() !== false) {
-                call_user_func_array([$this,$method],$args);
+                $result = call_user_func_array([$this,$method],$args);
                 $this->after();
+                return $result;
             }
         } else {
             echo "Method $method not found in controller" . get_class($this);
@@ -56,7 +58,7 @@ abstract class Controller {
         }
     }
 
-    public function validatePhotoUpload(array &$file,bool &$form_validated)
+    public function validatePhotoUpload(array &$file,bool &$form_validated,bool $isNecessary)
     {
         if (isset($_FILES['photo']) && !$_FILES['photo']['error']) {
             if (in_array($_FILES['photo']['type'],['image/jpeg','image/png'])) {
@@ -70,10 +72,15 @@ abstract class Controller {
                 $file['error'] = 'Картинка должна быть в формате jpeg или png';
                 $form_validated = false;
             }
-        } else {
+        } elseif($isNecessary) {
             $file['error'] = 'Картинка должна быть загружена';
             $form_validated = false;
         }
+    }
+
+    protected function render(string $view, $params = [])
+    {
+        return View::render($view, $params);
     }
 
 }

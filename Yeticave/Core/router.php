@@ -40,6 +40,10 @@ class Router {
         return false;
     }
 
+    /**
+     * TODO: комментарий добавить
+     * @param string $url
+     */
     public function dispatch(string $url) {
 
         $url = $this->removeQueryStringVariables($url);
@@ -56,7 +60,11 @@ class Router {
                 $action = $this->convertToCamelCase($action);
 
                 if (is_callable([$controller_object,$action])) {
-                    $controller_object->$action();
+                    $result = $controller_object->$action();
+                    if ($result !== null) {
+                        echo $result;
+                    }
+                    die();
                 } else {
                     echo "Method $action (in controller $controller) not found";
                 }
@@ -66,7 +74,7 @@ class Router {
         } else {
 
             header('HTTP/1.1 404 Not Found');
-            View::render('home/error.php',[
+            View::render('home/message.php', [
                 'categories' => Categories::selectAll(),
                 'user' => new User('Core\Db'),
                 'message' => '<p>No route matched! <a href="/">На главную</a></p>'

@@ -5,9 +5,10 @@ namespace Yeticave\App\Services;
 use Yeticave\Core\Db;
 use Yeticave\Core\Services\BaseService;
 
-class WinnerService extends BaseService {
-
-    public static function calculateWinners() {
+class WinnerService extends BaseService
+{
+    public static function calculateWinners()
+    {
         $wins = Db::select(
 <<< EOD
 select          lots.id,
@@ -47,5 +48,5 @@ EOD
             $mailer->send($message);*/
         }
     }
-
 }
+

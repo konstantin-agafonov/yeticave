@@ -5,11 +5,11 @@
     ]);
     ?>
     <form class="form container <?= $form_validated ? '' : ' form--invalid'; ?>"
-          method="post" enctype="multipart/form-data"> <!-- form--invalid -->
+          method="post" enctype="multipart/form-data">
 
         <h2>Регистрация нового аккаунта</h2>
 
-        <div class="form__item <?= $fields['email']['errors'] ? 'form__item--invalid' : ''; ?>"> <!-- form__item--invalid -->
+        <div class="form__item <?= $fields['email']['errors'] ? 'form__item--invalid' : ''; ?>">
             <label for="email">E-mail*</label>
             <input id="email" type="text" name="email" placeholder="Введите e-mail"
                    value="<?= $fields['email']['value'] ? htmlspecialchars($fields['email']['value']) : ''; ?>">

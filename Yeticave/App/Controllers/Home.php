@@ -13,7 +13,7 @@ class Home extends Controller
     {
         WinnerService::calculateWinners();
 
-        $user = new User('Db',false);
+        $user = new User('Db', false);
 
         $categories = Categories::selectAll();
 
@@ -23,7 +23,7 @@ class Home extends Controller
 
         $category_id = null;
 
-        return $this->render('home/index.php',[
+        return $this->render('home/index.php', [
             'user' => $user,
             'lots' => $lots,
             'categories' => $categories,
@@ -34,7 +34,7 @@ class Home extends Controller
 
     public function searchAction()
     {
-        $user = new User('Db',false);
+        $user = new User('Db', false);
 
         $categories = Categories::selectAll();
 
@@ -47,7 +47,7 @@ class Home extends Controller
             $category_id = null;
 
             if ($lots) {
-                return $this->render('home/index.php',[
+                return $this->render('home/index.php', [
                     'user' => $user,
                     'lots' => $lots,
                     'categories' => $categories,
@@ -56,7 +56,7 @@ class Home extends Controller
                 ]);
             } else {
                 header('HTTP/1.1 404 Not Found');
-                return $this->render('home/message.php',[
+                return $this->render('home/message.php', [
                     'categories' => $categories,
                     'user' => $user,
                     'message' => '<p>Лотов по запросу <strong>'
@@ -66,7 +66,7 @@ class Home extends Controller
             }
         } else {
             header('HTTP/1.1 404 Not Found');
-            return $this->render('home/message.php',[
+            return $this->render('home/message.php', [
                 'categories' => $categories,
                 'user' => $user,
                 'message' => '<p>Строка поиска не может быть пустой! <a href="/">На главную</a></p>'
@@ -88,9 +88,8 @@ class Home extends Controller
                 }
 
                 header("Content-type: application/json");
-                return json_encode($result,JSON_PRETTY_PRINT);
+                return json_encode($result, JSON_PRETTY_PRINT);
             }
         }
     }
-
 }

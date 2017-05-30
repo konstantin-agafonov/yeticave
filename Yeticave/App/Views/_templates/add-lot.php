@@ -1,18 +1,17 @@
 <main>
 
-    <?= includeTemplate('_templates/header-nav.php',[
+    <?= includeTemplate('_templates/header-nav.php', [
         'categories' => $categories
     ]); ?>
 
     <form class="form form--add-lot container <?= $form_validated ? '' : ' form--invalid'; ?>"
-          method="post" enctype="multipart/form-data"> <!-- form--invalid -->
+          method="post" enctype="multipart/form-data">
 
         <h2>Добавление лота</h2>
 
         <div class="form__container-two">
 
             <div class="form__item <?=$fields['lot-name']['errors'] ? 'form__item--invalid' : ''; ?>">
-                <!-- form__item--invalid -->
 
                 <label for="lot-name">Наименование</label>
                 <input id="lot-name" type="text" name="lot-name" placeholder="Введите наименование лота"
@@ -54,22 +53,21 @@
 
                 </select>
 
-                <?php
-                if (!$entered_category && !$form_validated) { ?>
+                <?php if (!$entered_category && !$form_validated) { ?>
                     <span class="form__error">
                             Необходимо выбрать категорию!
                     </span>
                 <?php } else {
-                        if ($fields['category']['errors']) {
-                            foreach ($fields['category']['errors'] as $error) { ?>
+                    if ($fields['category']['errors']) {
+                        foreach ($fields['category']['errors'] as $error) : ?>
 
-                               <span class="form__error">
-                                  <?=htmlspecialchars($error);?>
+                            <span class="form__error">
+                                  <?= htmlspecialchars($error); ?>
                                </span>
 
-                        <?php }
-                            }
-                        }?>
+                        <?php endforeach;
+                    }
+                } ?>
 
             </div>
 
@@ -78,18 +76,19 @@
         <div class="form__item form__item--wide <?=$fields['message']['errors'] ? 'form__item--invalid' : ''; ?>">
 
             <label for="message">Описание</label>
-            <textarea id="message" name="message"
-                      placeholder="Напишите описание лота"><?= $fields['message']['value'] ? htmlspecialchars($fields['message']['value']) : ''; ?></textarea>
+            <textarea id="message" name="message" placeholder="Напишите описание лота">
+                <?= $fields['message']['value'] ? htmlspecialchars($fields['message']['value']) : ''; ?>
+            </textarea>
 
             <?php
             if ($fields['message']['errors']) {
-                foreach ($fields['message']['errors'] as $error) { ?>
+                foreach ($fields['message']['errors'] as $error) : ?>
 
                     <span class="form__error">
-                            <?=htmlspecialchars($error);?>
-                        </span>
+                        <?= htmlspecialchars($error); ?>
+                    </span>
 
-                <?php }
+                <?php endforeach;
             } ?>
 
         </div>
@@ -127,13 +126,13 @@
 
                 <?php
                 if ($fields['lot-rate']['errors']) {
-                    foreach ($fields['lot-rate']['errors'] as $error) { ?>
+                    foreach ($fields['lot-rate']['errors'] as $error) : ?>
 
                         <span class="form__error">
                             <?=htmlspecialchars($error);?>
                         </span>
 
-                    <?php }
+                    <?php endforeach;
                 } ?>
 
             </div>
@@ -147,13 +146,13 @@
 
                 <?php
                 if ($fields['lot-step']['errors']) {
-                    foreach ($fields['lot-step']['errors'] as $error) { ?>
+                    foreach ($fields['lot-step']['errors'] as $error) : ?>
 
                         <span class="form__error">
                             <?=htmlspecialchars($error);?>
                         </span>
 
-                    <?php }
+                    <?php endforeach;
                 } ?>
 
             </div>
@@ -166,13 +165,13 @@
 
                 <?php
                 if ($fields['lot-date']['errors']) {
-                    foreach ($fields['lot-date']['errors'] as $error) { ?>
+                    foreach ($fields['lot-date']['errors'] as $error) : ?>
 
                         <span class="form__error">
                             <?=htmlspecialchars($error);?>
                         </span>
 
-                    <?php }
+                    <?php endforeach;
                 } ?>
 
             </div>

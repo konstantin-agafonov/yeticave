@@ -1,15 +1,13 @@
 <main>
 
-    <?=includeTemplate('_templates/header-nav.php',[
+    <?=includeTemplate('_templates/header-nav.php', [
         'categories' => $categories
     ]);?>
 
     <form class="form container <?= $form_validated ? '' : ' form--invalid'; ?>" method="post">
-        <!-- form--invalid -->
         <h2>Вход</h2>
 
         <div class="form__item <?=$fields['email']['errors'] ? 'form__item--invalid' : ''; ?>">
-            <!-- form__item--invalid -->
             <label for="email">E-mail*</label>
             <input id="email" type="text" name="email" placeholder="Введите e-mail"
                    value="<?=$fields['email']['value'] ? htmlspecialchars($fields['email']['value']) : ''; ?>">

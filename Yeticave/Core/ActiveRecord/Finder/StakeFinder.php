@@ -22,17 +22,16 @@ where     stakes.lot_id = ?
 order by  stakes.stake_sum desc
 limit     1;
 EOD
-            ,[$id]
+        , [$id]
         );
 
         if ($stakeFields) {
             $stakeFields = $stakeFields[0];
             $className = 'Yeticave\Core\ActiveRecord\Record\\' . self::$entityName . 'Record';
-            $stakeRecord = new $className('Core\Db',$stakeFields,false);
+            $stakeRecord = new $className('Core\Db', $stakeFields, false);
             return $stakeRecord;
         } else {
             return false;
         }
     }
-
 }

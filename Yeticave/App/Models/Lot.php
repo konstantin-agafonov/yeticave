@@ -7,7 +7,6 @@ use Yeticave\Core\Db;
 
 class Lot extends Model
 {
-
     public static function selectAll()
     {
         $lots = Db::select(
@@ -31,7 +30,7 @@ from    lots
         left join categories on lots.category_id = categories.id
 where   lots.category_id = ?;
 EOD
-        ,[$catId]);
+        , [$catId]);
         return $lots;
     }
 
@@ -48,10 +47,9 @@ from    lots
 where   lots.name like ?
         or lots.description like ?;
 EOD
-        ,[$search_param,$search_param]);
+        , [$search_param,$search_param]);
 
         return $lots;
-
     }
 
     public static function searchSuggest(string $searchString)
@@ -66,10 +64,8 @@ where     lots.name like ?
 order by  lots.name
 limit     10;
 EOD
-            ,[$search_param]);
+            , [$search_param]);
 
         return $lots;
-
     }
-
 }

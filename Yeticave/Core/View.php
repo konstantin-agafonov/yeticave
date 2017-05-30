@@ -10,7 +10,7 @@ class View
      * @param array $args
      * @return string
      */
-    public static function render($view, $args = [])
+    public static function render($view, $args = []) : string
     {
         extract($args,EXTR_OVERWRITE);
 

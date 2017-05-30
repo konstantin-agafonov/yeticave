@@ -28,7 +28,7 @@
 
                         <div class="lot-item__state">
                             <div class="lot-item__timer timer">
-                                10:54:12
+                                <?=lotTimeRemaining();?>
                             </div>
                             <div class="lot-item__cost-state">
                                 <div class="lot-item__rate">
@@ -36,14 +36,20 @@
                                     <span class="lot-item__cost">
                                     <?= number_format(
                                             (float)$lot->start_price_Field,
-                                            2, '.', ' '); ?>
+                                            2,
+                                            '.',
+                                            ' '
+                                    ); ?>
                                 </span>
                                 </div>
                                 <div class="lot-item__min-cost">
                                     Мин. ставка <span>
                                         <?= ($lot->stake_step_Field) ? number_format(
-                                                (float)$lot->stake_step_Field,
-                                            2, '.', ' ') : 'Не определено'; ?>
+                                            (float)$lot->stake_step_Field,
+                                            2,
+                                            '.',
+                                            ' '
+                                        ) : 'Не определено'; ?>
                                         р</span>
                                 </div>
                             </div>
@@ -73,10 +79,8 @@
 
                         </div>
 
-
                     <div class="history">
                         <h3>История ставок (<span><?=count($stakes);?></span>)</h3>
-                        <!-- заполните эту таблицу данными из массива $stakes-->
                         <table class="history__list">
 
                             <?php if (!empty($stakes)): ?>

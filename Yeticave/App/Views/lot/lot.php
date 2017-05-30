@@ -1,8 +1,9 @@
 <?php
 
-echo includeTemplate('_templates/header.php',[
+echo includeTemplate('_templates/header.php', [
     'user' => $user
 ]);
+
 echo includeTemplate('_templates/lots.php', [
     'stakes' => $stakes,
     'lot' => $lot,
@@ -11,7 +12,8 @@ echo includeTemplate('_templates/lots.php', [
     'categories' => $categories,
     'user' => $user
 ]);
-echo includeTemplate('_templates/footer.php',[
+
+echo includeTemplate('_templates/footer.php', [
     'categories' => $categories,
     'user' => $user
 ]);

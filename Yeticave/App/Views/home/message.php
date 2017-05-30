@@ -1,6 +1,6 @@
 <?php
 
-echo includeTemplate('_templates/header.php',[
+echo includeTemplate('_templates/header.php', [
     'user' => $user
 ]);
 
@@ -13,8 +13,9 @@ echo
 </main>
 EOD;
 
-echo includeTemplate('_templates/footer.php',[
+echo includeTemplate('_templates/footer.php', [
     'categories' => $categories,
     'user' => $user
 ]);
+
 

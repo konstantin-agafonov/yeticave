@@ -5,7 +5,8 @@ namespace Yeticave\Core;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator;
 
-abstract class Controller {
+abstract class Controller
+{
 
     protected $route_params = [];
 
@@ -14,13 +15,13 @@ abstract class Controller {
         $this->route_params = $route_params;
     }
 
-    public function __call($name,$args)
+    public function __call($name, $args)
     {
         $method = $name . 'Action';
 
-        if (method_exists($this,$method)) {
+        if (method_exists($this, $method)) {
             if ($this->before() !== false) {
-                $result = call_user_func_array([$this,$method],$args);
+                $result = call_user_func_array([$this, $method], $args);
                 $this->after();
                 return $result;
             }
@@ -41,8 +42,8 @@ abstract class Controller {
 
     public function validateFormFields(array &$fields,bool &$form_validated)
     {
-        foreach($_POST as $key => $value) {
-            if (array_key_exists($key,$fields)) {
+        foreach ($_POST as $key => $value) {
+            if (array_key_exists($key, $fields)) {
                 try {
                     /**
                      * @var Validator $var
@@ -58,13 +59,13 @@ abstract class Controller {
         }
     }
 
-    public function validatePhotoUpload(array &$file,bool &$form_validated,bool $isNecessary)
+    public function validatePhotoUpload(array &$file, bool &$form_validated, bool $isNecessary)
     {
         if (isset($_FILES['photo']) && !$_FILES['photo']['error']) {
             if (in_array($_FILES['photo']['type'],['image/jpeg','image/png'])) {
                 $file['name'] = basename($_FILES['photo']['name']);
                 $file['path'] = $_SERVER["DOCUMENT_ROOT"] . '\public\uploads\\' . $file['name'];
-                if (!move_uploaded_file($_FILES['photo']['tmp_name'],$file['path'])) {
+                if (!move_uploaded_file($_FILES['photo']['tmp_name'], $file['path'])) {
                     $file['error'] = 'Ошибка при загрузке картинки';
                     $form_validated = false;
                 }
@@ -72,7 +73,7 @@ abstract class Controller {
                 $file['error'] = 'Картинка должна быть в формате jpeg или png';
                 $form_validated = false;
             }
-        } elseif($isNecessary) {
+        } elseif ($isNecessary) {
             $file['error'] = 'Картинка должна быть загружена';
             $form_validated = false;
         }
@@ -82,5 +83,4 @@ abstract class Controller {
     {
         return View::render($view, $params);
     }
-
 }

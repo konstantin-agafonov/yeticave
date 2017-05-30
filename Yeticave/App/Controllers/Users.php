@@ -12,19 +12,19 @@ use Respect\Validation\Validator as v;
 
 class Users extends Controller
 {
-
     public function loginAction()
     {
-
         $categories = Categories::selectAll();
-
-        $user = new User('Db',false);
+        $user = new User('Db', false);
 
         if ($user->isLoggedIn()) {
-            return $this->render('home/message.php',[
+            return $this->render('home/message.php', [
                 'categories' => $categories,
                 'user' => $user,
-                'message' => '<p>Вы работаете от имени пользователя '. $user->getUserName() .'! Если это не вы, то зайдите под другим именем: <a href="/users/logout">Выход</a></p>'
+                'message' =>
+                    '<p>Вы работаете от имени пользователя '
+                    . $user->getUserName()
+                    .'! Если это не вы, то зайдите под другим именем: <a href="/users/logout">Выход</a></p>'
             ]);
         }
 
@@ -32,11 +32,13 @@ class Users extends Controller
         $user_validated = true;
 
         $fields = [
-            "email" => ['v' => v::email()->notEmpty()->setName('email'),
+            "email" => [
+                'v' => v::email()->notEmpty()->setName('email'),
                 'value' => null,
                 'errors' => []
             ],
-            "password" => ['v' => v::stringType()->length(5,30)->notEmpty()->setName('password'),
+            "password" => [
+                'v' => v::stringType()->length(5,30)->notEmpty()->setName('password'),
                 'value' => null,
                 'errors' => []
             ],
@@ -44,27 +46,29 @@ class Users extends Controller
 
         if (!empty($_POST)) {
             $this->validateFormFields($fields,$form_validated);
-
             if ($form_validated) {
-                $user = new User('Db',false,$fields['email']['value'],$fields['password']['value']);
+                $user = new User(
+                    'Db',
+                    false,
+                    $fields['email']['value'],
+                    $fields['password']['value']
+                );
             }
             $user_validated = false;
         }
 
-        return $this->render('users/login.php',[
+        return $this->render('users/login.php', [
             'fields' => $fields,
             'form_validated' => $form_validated,
             'user_validated' => $user_validated,
             'categories' => $categories,
             'user' => $user
         ]);
-
     }
 
     public function logoutAction()
     {
-        $user = new User('Db',false);
-
+        $user = new User('Db', false);
         if ($user->isLoggedIn()) {
             $user->logout();
         }
@@ -72,41 +76,39 @@ class Users extends Controller
 
     public function mylotsAction()
     {
-
         $categories = Categories::selectAll();
-
-        $user = new User('Db',false);
+        $user = new User('Db', false);
 
         if (!$user->isLoggedIn()) {
             header("HTTP/1.1 403 Forbidden");
-            return $this->render('home/message.php',[
+            return $this->render('home/message.php', [
                 'categories' => $categories,
                 'user' => $user,
-                'message' => '<p>Страница доступна только для зарегистрированных пользователей! <a href="/">На главную</a></p>'
+                'message' =>
+                    '<p>Страница доступна только для зарегистрированных пользователей! <a href="/">На главную</a></p>'
             ]);
         }
 
         $stakes = Stakes::selectByUserId($user->getUserId());
 
-        return $this->render('users/mylots.php',[
+        return $this->render('users/mylots.php', [
             'stakes' => $stakes,
             'categories' => $categories,
             'user' => $user
         ]);
-
     }
 
     public function signupAction()
     {
         $categories = Categories::selectAll();
+        $user = new User('Db', false);
 
-        $user = new User('Db',false);
-
-        if($user->isLoggedIn()) {
+        if ($user->isLoggedIn()) {
             return $this->render('home/message.php', [
                 'categories' => Categories::selectAll(),
                 'user' => $user,
-                'message' => '<p>Страница только для незарегистрированных пользователей! <a href="/users/logout">Выйти</a></p>'
+                'message' =>
+                    '<p>Страница только для незарегистрированных пользователей! <a href="/users/logout">Выйти</a></p>'
             ]);
         }
 
@@ -159,12 +161,17 @@ class Users extends Controller
                     'contacts'  => $fields['contacts']['value'],
                     'password'  => $new_pass_hash,
                     'avatar'    => $file['name']
-                ],true);
+                ], true);
 
                 $new_user_id = $new_user->save();
 
                 if ($new_user_id) {
-                    (new User('Yeticave\Core\Db',true,$fields['email']['value'],$fields['password']['value']));
+                    (
+                        new User('Yeticave\Core\Db',
+                        true,
+                        $fields['email']['value'],
+                        $fields['password']['value'])
+                    );
                 }
             }
         }
@@ -177,5 +184,4 @@ class Users extends Controller
             'file' => $file
         ]);
     }
-
 }

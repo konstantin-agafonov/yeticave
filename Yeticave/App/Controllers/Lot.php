@@ -17,18 +17,14 @@ class Lot extends Controller
     public function showLotByIdAction()
     {
         $categories = Categories::selectAll();
-
-        $user = new User('Db',false);
-
+        $user = new User('Db', false);
         $lot_id = $this->route_params['id'];
-
         $lot = LotFinder::findById($lot_id);
-
         $fields = [];
 
         if (!$lot) {
             header('HTTP/1.1 404 Not Found');
-            return $this->render('home/message.php',[
+            return $this->render('home/message.php', [
                 'categories' => $categories,
                 'user' => $user,
                 'message' => '<p>Запрошенного лота не существует! <a href="/">На главную</a></p>'
@@ -65,12 +61,14 @@ class Lot extends Controller
     {
         $categories = Categories::selectAll();
 
-        $user = new User('Db',false);
+        $user = new User('Db', false);
         if (!$user->isLoggedIn()) {
             return $this->render('home/message.php', [
                 'categories' => Categories::selectAll(),
                 'user' => $user,
-                'message' => '<p>Страница доступна только для зарегистрированных пользователей! После входа для добавления ставки зайдите на страницу соответствующего лота! <a href="/users/login">Вход</a></p>'
+                'message' =>
+                    '<p>Страница доступна только для зарегистрированных пользователей!
+После входа для добавления ставки зайдите на страницу соответствующего лота! <a href="/users/login">Вход</a></p>'
             ]);
         }
 
@@ -90,12 +88,13 @@ class Lot extends Controller
         ];
 
         if (!empty($_POST)) {
-            $this->validateFormFields($fields,$form_validated);
+            $this->validateFormFields($fields, $form_validated);
         } else {
             return $this->render('home/message.php', [
                 'categories' => Categories::selectAll(),
                 'user' => $user,
-                'message' => '<p>Для добавления ставки зайдите на страницу соответствующего лота! <a href="/">На главную</a></p>'
+                'message' =>
+                    '<p>Для добавления ставки зайдите на страницу соответствующего лота! <a href="/">На главную</a></p>'
             ]);
         }
 
@@ -117,23 +116,23 @@ class Lot extends Controller
 
         if (empty($fields['cost']['errors'])) {
             $max_lot_stake = StakeFinder::maxByLotId($lot->id_Field);
-            if($max_lot_stake) {
+            if ($max_lot_stake) {
                 $min_possible_stake_sum = $max_lot_stake->stake_sum_Field + $lot->stake_step_Field;
             } else {
                 $min_possible_stake_sum = $lot->start_price_Field + $lot->stake_step_Field;
             }
-            if($min_possible_stake_sum > $fields['cost']['value']) {
+            if ($min_possible_stake_sum > $fields['cost']['value']) {
                 $fields['cost']['errors'][] = "Сумма новой ставки должна быть не менее $min_possible_stake_sum рублей!";
                 $form_validated = false;
             }
         }
 
         if ($form_validated) {
-            $new_stake = new StakeRecord('Yeticave\Core\Db',[
+            $new_stake = new StakeRecord('Yeticave\Core\Db', [
                 'stake_sum' => $fields['cost']['value'],
                 'user_id'   => $user->getUserId(),
                 'lot_id'    => $fields['lot_id']['value']
-            ],true);
+            ], true);
             $new_stake_id = $new_stake->save();
             if ($new_stake_id) {
                 header("Location: /lot/" . $lot->id_Field);
@@ -169,14 +168,15 @@ class Lot extends Controller
     {
         $categories = Categories::selectAll();
 
-        $user = new User('Db',false);
+        $user = new User('Db', false);
 
         if (!$user->isLoggedIn()) {
             header("HTTP/1.1 403 Forbidden");
-            return $this->render('home/message.php',[
+            return $this->render('home/message.php', [
                 'categories' => $categories,
                 'user' => $user,
-                'message' => '<p>Страница доступна ТОЛЬКО для зарегистрированных пользователей! <a href="/">На главную</a></p>'
+                'message' =>
+                    '<p>Страница доступна ТОЛЬКО для зарегистрированных пользователей! <a href="/">На главную</a></p>'
             ]);
         }
 
@@ -219,16 +219,14 @@ class Lot extends Controller
 
         if (!empty($_POST)) {
             $this->validateFormFields($fields, $form_validated);
-
             $this->validatePhotoUpload($file, $form_validated, true);
         }
 
         if (!empty($_POST) && $form_validated) {
-
             $dtime = \DateTime::createFromFormat("d.m.Y", $fields['lot-date']['value']);
             $timestamp = $dtime->format("Y-m-d H:i:s");
 
-            $new_lot = new LotRecord('Yeticave\Core\Db',[
+            $new_lot = new LotRecord('Yeticave\Core\Db', [
                 'pic'           => '../uploads/' . $file['name'],
                 'name'          => $fields['lot-name']['value'],
                 'description'   => $fields['message']['value'],
@@ -245,15 +243,14 @@ class Lot extends Controller
                 header("Location: /lot/" . $new_lot_id);
                 return null;
             } else {
-                return $this->render('home/message.php',[
+                return $this->render('home/message.php', [
                     'categories' => $categories,
                     'user' => $user,
                     'message' => '<p>Ошибка при обработке формы! <a href="/">На главную</a></p>'
                 ]);
             }
-
         } else {
-            return $this->render('lot/add.php',[
+            return $this->render('lot/add.php', [
                 'categories' => $categories,
                 'form_validated' => $form_validated,
                 'fields' => $fields,
@@ -261,29 +258,17 @@ class Lot extends Controller
                 'user' => $user
             ]);
         }
-
     }
 
     public function showLotsByCategoryIdAction()
     {
-        $user = new User('Db',false);
-
+        $user = new User('Db', false);
         $categories = Categories::selectAll();
-
-        // временная метка для полночи следующего дня
-        $tomorrow = strtotime('tomorrow midnight');
-
-        // временная метка для настоящего времени
-        $now = time();
-
-        // далее нужно вычислить оставшееся время до начала следующих суток и записать его в переменную $lot_time_remaining
-        $lot_time_remaining = date("H:i", $tomorrow + ($tomorrow - $now));
-
+        $lot_time_remaining = lotTimeRemaining();
         $category_id = $this->route_params['id'];
-
         $lots = \Yeticave\App\Models\Lot::selectByCategoryId($category_id);
 
-        return $this->render('home/index.php',[
+        return $this->render('home/index.php', [
             'user' => $user,
             'lots' => $lots,
             'categories' => $categories,
@@ -291,6 +276,4 @@ class Lot extends Controller
             'category_id' => $category_id
         ]);
     }
-
-
 }

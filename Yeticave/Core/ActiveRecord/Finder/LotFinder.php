@@ -12,7 +12,8 @@ class LotFinder extends BaseFinder
     private function __construct(){}
     private function __clone(){}
 
-    public static function findById(int $id) {
+    public static function findById(int $id)
+    {
 
         $lotFields = Db::select(
 <<< EOD
@@ -22,17 +23,16 @@ from    lots
         left join categories on lots.category_id = categories.id
 where   lots.id= ?;
 EOD
-            ,[$id]
+        , [$id]
         );
 
         if ($lotFields) {
             $lotFields = $lotFields[0];
             $className = 'Yeticave\Core\ActiveRecord\Record\\' . self::$entityName . 'Record';
-            $lotRecord = new $className('Core\Db',$lotFields,false);
+            $lotRecord = new $className('Core\Db', $lotFields, false);
             return $lotRecord;
         } else {
             return false;
         }
     }
-
 }

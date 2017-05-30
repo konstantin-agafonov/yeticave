@@ -1,6 +1,6 @@
 <footer class="main-footer">
 
-    <?=includeTemplate('_templates/header-nav.php',[
+    <?=includeTemplate('_templates/header-nav.php', [
             'categories' => $categories
     ]);?>
 

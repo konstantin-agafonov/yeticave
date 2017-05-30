@@ -1,6 +1,6 @@
 <?php
 
-echo includeTemplate('_templates/header.php',[
+echo includeTemplate('_templates/header.php', [
     'user' => $user
 ]);
 
@@ -11,7 +11,7 @@ echo includeTemplate('_templates/sign-up.php', [
     'file' => $file
 ]);
 
-echo includeTemplate('_templates/footer.php',[
+echo includeTemplate('_templates/footer.php', [
     'categories' => $categories,
     'user' => $user
 ]);

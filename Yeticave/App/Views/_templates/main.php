@@ -6,22 +6,22 @@
         </p>
         <ul class="promo__list">
             <li class="promo__item promo__item--boards">
-                <a class="promo__link" href="all-lots.html">Доски и лыжи</a>
+                <a class="promo__link" href="/category/1">Доски и лыжи</a>
             </li>
             <li class="promo__item promo__item--attachment">
-                <a class="promo__link" href="all-lots.html">Крепления</a>
+                <a class="promo__link" href="/category/2">Крепления</a>
             </li>
             <li class="promo__item promo__item--boots">
-                <a class="promo__link" href="all-lots.html">Ботинки</a>
+                <a class="promo__link" href="/category/3">Ботинки</a>
             </li>
             <li class="promo__item promo__item--clothing">
-                <a class="promo__link" href="all-lots.html">Одежда</a>
+                <a class="promo__link" href="/category/4">Одежда</a>
             </li>
             <li class="promo__item promo__item--tools">
-                <a class="promo__link" href="all-lots.html">Инструменты</a>
+                <a class="promo__link" href="/category/5">Инструменты</a>
             </li>
             <li class="promo__item promo__item--other">
-                <a class="promo__link" href="all-lots.html">Разное</a>
+                <a class="promo__link" href="/category/6">Разное</a>
             </li>
         </ul>
     </section>

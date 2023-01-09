@@ -2,7 +2,8 @@
 
 namespace Yeticave\Core;
 
-class Db {
+class Db
+{
 
     /**
      * @var mysqli
@@ -12,13 +13,14 @@ class Db {
     private function __construct() {}
     private function __clone() {}
 
-    public static function init() {
+    public static function init()
+    {
         if (!isset(self::$connection)) {
-            self::$connection = mysqli_connect(DB_HOST, DB_USER,DB_PASS,DB_NAME);
+            self::$connection = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
             if (self::$connection === false){
                 die("Ошибка подключения: " . mysqli_connect_error());
             }
-            mysqli_set_charset(self::$connection,'utf8');
+            mysqli_set_charset(self::$connection, 'utf8');
         }
     }
 
@@ -31,7 +33,8 @@ class Db {
      *
      * @return bool|mysqli_stmt Подготовленное выражение
      */
-    private static function get_prepare_stmt(string $sql, $data = []) {
+    private static function get_prepare_stmt(string $sql, array $data = [])
+    {
         $stmt = mysqli_prepare(self::$connection, $sql);
 
         if ($data) {
@@ -57,13 +60,6 @@ class Db {
                 }
             }
 
-            /*echo '<pre>';
-            var_dump($sql);
-            var_dump($stmt);
-            var_dump($types);
-            var_dump($stmt_data);
-            echo '</pre>';*/
-
             mysqli_stmt_bind_param($stmt, $types, ...$stmt_data);
         }
 
@@ -75,9 +71,9 @@ class Db {
      * @param array $data
      * @return array
      */
-    static function select(string $sql, array $data = []): array
+    public static function select(string $sql, array $data = []): array
     {
-        $prepared_sql = self::get_prepare_stmt($sql,$data);
+        $prepared_sql = self::get_prepare_stmt($sql, $data);
 
         if ($prepared_sql === false) {
             return [];
@@ -99,7 +95,7 @@ class Db {
      * @param array $data
      * @return bool|int
      */
-    static function insert(string $sql, array $data = [])
+    public static function insert(string $sql, array $data = [])
     {
         return self::getInsertOrUpdateResult($sql, $data, false);
     }
@@ -110,7 +106,7 @@ class Db {
      * @param array $conditions
      * @return bool|int
      */
-    static function update(string $table_name, array $data, array $conditions = [])
+    public static function update(string $table_name, array $data, array $conditions = [])
     {
         $placeholders = [];
         $fieldsString = self::getFieldsString($data, $placeholders);
@@ -127,7 +123,7 @@ class Db {
      * @param bool $update
      * @return bool|int
      */
-    static private function getInsertOrUpdateResult(string $sql, array $placeholders = [], $update = true)
+    private static function getInsertOrUpdateResult(string $sql, array $placeholders = [], $update = true)
     {
         $prepared_sql = self::get_prepare_stmt($sql, $placeholders);
         if (!$prepared_sql) {
@@ -156,7 +152,7 @@ class Db {
      * @param array $placeholders
      * @return string
      */
-    static private function getFieldsString($data = [], array &$placeholders): string
+    private static function getFieldsString($data = [], array &$placeholders): string
     {
         $fields = [];
 
@@ -169,6 +165,4 @@ class Db {
 
         return $fieldsString;
     }
-
-
 }

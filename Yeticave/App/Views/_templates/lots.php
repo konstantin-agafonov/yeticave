@@ -1,57 +1,63 @@
 <main>
 
     <?php
-    echo includeTemplate('../Yeticave/App/Views/_templates/header-nav.php',[
-            'categories' => $data['categories']
+    echo includeTemplate('_templates/header-nav.php',[
+            'categories' => $categories
     ]);
     ?>
 
     <section class="lot-item container">
         <div class="lot-item__content">
 
-            <?php if ($data['lot']): ?>
+            <?php if ($lot): ?>
 
                 <div class="lot-item__left">
-                    <h2><?=htmlentities($data['lot']->name_Field); ?></h2>
+                    <h2><?=htmlentities($lot->name_Field); ?></h2>
                     <div class="lot-item__image">
-                        <img src="http://<?=$_SERVER['SERVER_NAME'];?>/public/uploads/<?=htmlentities($data['lot']->pic_Field); ?>"
-                             width="730" height="548" alt="<?=htmlentities($data['lot']->name_Field); ?>">
+                        <img src="http://<?=$_SERVER['SERVER_NAME'];?>/public/uploads/<?=htmlentities($lot->pic_Field); ?>"
+                             width="730" height="548" alt="<?=htmlentities($lot->name_Field); ?>">
                     </div>
                     <p class="lot-item__category">Категория:
-                        <span><?=htmlspecialchars($data['lot']->category_name_Field);?></span>
+                        <span><?=htmlspecialchars($lot->category_name_Field);?></span>
                     </p>
                     <p class="lot-item__description">
-                        <?=(isset($data['lot']->description_Field))?$data['lot']->description_Field:'Нет описания';?>
+                        <?=($lot->description_Field)?htmlspecialchars($lot->description_Field):'Нет описания';?>
                     </p>
                 </div>
                 <div class="lot-item__right">
 
                         <div class="lot-item__state">
                             <div class="lot-item__timer timer">
-                                10:54:12
+                                <?=lotTimeRemaining();?>
                             </div>
                             <div class="lot-item__cost-state">
                                 <div class="lot-item__rate">
                                     <span class="lot-item__amount">Текущая цена</span>
                                     <span class="lot-item__cost">
                                     <?= number_format(
-                                            (float)$data['lot']->start_price_Field,
-                                            2, '.', ' '); ?>
+                                            (float)$lot->start_price_Field,
+                                            2,
+                                            '.',
+                                            ' '
+                                    ); ?>
                                 </span>
                                 </div>
                                 <div class="lot-item__min-cost">
                                     Мин. ставка <span>
-                                        <?= (isset($data['lot']->stake_step_Field)) ? number_format(
-                                                (float)$data['lot']->stake_step_Field,
-                                            2, '.', ' ') : 'Не определено'; ?>
+                                        <?= ($lot->stake_step_Field) ? number_format(
+                                            (float)$lot->stake_step_Field,
+                                            2,
+                                            '.',
+                                            ' '
+                                        ) : 'Не определено'; ?>
                                         р</span>
                                 </div>
                             </div>
 
-                            <?php if ($data['user']->isLoggedIn() && (!$data['have_stake'])) { ?>
+                            <?php if ($user->isLoggedIn() && (!$have_stake)) { ?>
 
-                                <form class="lot-item__form" method="post">
-                                    <input type="hidden" name="lot_id" value="<?=$data['lot']->id_Field;?>">
+                                <form class="lot-item__form" method="post" action="/lot/new-stake">
+                                    <input type="hidden" name="lot_id" value="<?=htmlspecialchars($lot->id_Field);?>">
                                     <p class="lot-item__form-item">
                                         <label for="cost">Ваша ставка</label>
                                         <input id="cost" type="number" name="cost" min="0" step="0.01"
@@ -60,24 +66,28 @@
                                     <button type="submit" class="button">Сделать ставку</button>
                                 </form>
                                 <div style="color: red;clear: both;">
-                                    <?=isset($data['fields']['cost']['error']) ? $data['fields']['cost']['error'] : '';?>
+                                    <?php if (!empty($fields['cost']['errors'])) {
+                                        foreach ($fields['cost']['errors'] as $error) { ?>
+                                            <p>
+                                                <?=htmlspecialchars($error);?>
+                                            </p>
+                                        <?php }
+                                    } ?>
                                 </div>
 
                             <?php } ?>
 
                         </div>
 
-
                     <div class="history">
-                        <h3>История ставок (<span><?=count($data['stakes']);?></span>)</h3>
-                        <!-- заполните эту таблицу данными из массива $stakes-->
+                        <h3>История ставок (<span><?=count($stakes);?></span>)</h3>
                         <table class="history__list">
 
-                            <?php if (!empty($data['stakes'])): ?>
-                                <?php foreach ($data['stakes'] as &$bet): ?>
+                            <?php if (!empty($stakes)): ?>
+                                <?php foreach ($stakes as &$bet): ?>
                                     <tr class="history__item">
                                         <td class="history__name">
-                                            <?=$bet['user_name'];?>
+                                            <?=htmlspecialchars($bet['user_name']);?>
                                         </td>
                                         <td class="history__price"><?= htmlspecialchars($bet['stake_sum']); ?> р</td>
                                         <td class="history__time"><?= relativeTime(strtotime($bet['created_at'])); ?></td>

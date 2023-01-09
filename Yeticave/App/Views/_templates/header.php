@@ -24,25 +24,22 @@
             <input class="main-header__search-btn" type="submit" name="find" value="Найти">
         </form>
 
-        <?php if ($data['user']->isLoggedIn()): ?>
+        <?php if ($user->isLoggedIn()): ?>
             <a class="main-header__add-lot button" href="/lot/add">Добавить лот</a>
         <?php endif; ?>
 
         <nav class="user-menu">
 
-            <?php if ($data['user']->isLoggedIn()): ?>
-
+            <?php if ($user->isLoggedIn()): ?>
                 <div class="user-menu__image">
-                    <img src="http://<?=$_SERVER['SERVER_NAME'];?>/public/uploads/<?= $data['user']->getUserAvatar(); ?>"
+                    <img src="http://<?=$_SERVER['SERVER_NAME'];?>/public/uploads/<?= htmlspecialchars($user->getUserAvatar()); ?>"
                          width="40" height="40" alt="Пользователь">
                 </div>
                 <div class="user-menu__logged">
-                    <p><a href="/users/mylots"><?= $data['user']->getUserName(); ?></a></p>
+                    <p><a href="/users/mylots"><?= htmlspecialchars($user->getUserName()); ?></a></p>
                     <a href="/users/logout">Выйти</a>
                 </div>
-
             <?php else: ?>
-
                 <ul class="user-menu__list">
                     <li class="user-menu__item">
                         <a href="/users/signup">Регистрация</a>
@@ -51,10 +48,7 @@
                         <a href="/users/login">Вход</a>
                     </li>
                 </ul>
-
             <?php endif; ?>
-
         </nav>
-
     </div>
 </header>

@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule ^(.*)$ public/?url=$1 [NC,L]

@@ -1,9 +1,10 @@
 <?php
 
-echo includeTemplate('../Yeticave/App/Views/_templates/header.php',[
+echo includeTemplate('_templates/header.php', [
     'user' => $user
 ]);
-echo includeTemplate('../Yeticave/App/Views/_templates/lots.php', [
+
+echo includeTemplate('_templates/lots.php', [
     'stakes' => $stakes,
     'lot' => $lot,
     'fields' => $fields,
@@ -11,7 +12,8 @@ echo includeTemplate('../Yeticave/App/Views/_templates/lots.php', [
     'categories' => $categories,
     'user' => $user
 ]);
-echo includeTemplate('../Yeticave/App/Views/_templates/footer.php',[
+
+echo includeTemplate('_templates/footer.php', [
     'categories' => $categories,
     'user' => $user
 ]);

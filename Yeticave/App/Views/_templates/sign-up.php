@@ -1,25 +1,25 @@
 <main>
     <?php
-    echo includeTemplate('../Yeticave/App/Views/_templates/header-nav.php', [
-        'categories' => $data['categories']
+    echo includeTemplate('_templates/header-nav.php', [
+        'categories' => $categories
     ]);
     ?>
-    <form class="form container <?= $data['form_validated'] ? '' : ' form--invalid'; ?>"
-          method="post" enctype="multipart/form-data"> <!-- form--invalid -->
+    <form class="form container <?= $form_validated ? '' : ' form--invalid'; ?>"
+          method="post" enctype="multipart/form-data">
 
         <h2>Регистрация нового аккаунта</h2>
 
-        <div class="form__item <?= isset($data['fields']['email']['errors']) ? 'form__item--invalid' : ''; ?>"> <!-- form__item--invalid -->
+        <div class="form__item <?= $fields['email']['errors'] ? 'form__item--invalid' : ''; ?>">
             <label for="email">E-mail*</label>
             <input id="email" type="text" name="email" placeholder="Введите e-mail"
-                   value="<?= $data['fields']['email']['value'] ? $data['fields']['email']['value'] : ''; ?>">
+                   value="<?= $fields['email']['value'] ? htmlspecialchars($fields['email']['value']) : ''; ?>">
 
             <?php
-            if (isset($data['fields']['email']['errors'])) {
-                foreach ($data['fields']['email']['errors'] as $error) { ?>
+            if ($fields['email']['errors']) {
+                foreach ($fields['email']['errors'] as $error) { ?>
 
                     <span class="form__error">
-                            <?=$error;?>
+                            <?=htmlspecialchars($error);?>
                         </span>
 
                 <?php }
@@ -27,16 +27,16 @@
 
         </div>
 
-        <div class="form__item <?= $data['fields']['password']['errors'] ? 'form__item--invalid' : ''; ?>">
+        <div class="form__item <?= $fields['password']['errors'] ? 'form__item--invalid' : ''; ?>">
             <label for="password">Пароль*</label>
             <input id="password" type="password" name="password" placeholder="Введите пароль">
 
             <?php
-            if (isset($data['fields']['password']['errors'])) {
-                foreach ($data['fields']['password']['errors'] as $error) { ?>
+            if ($fields['password']['errors']) {
+                foreach ($fields['password']['errors'] as $error) { ?>
 
                     <span class="form__error">
-                        <?=$error;?>
+                        <?=htmlspecialchars($error);?>
                     </span>
 
                 <?php }
@@ -44,17 +44,17 @@
 
         </div>
 
-        <div class="form__item <?= $data['fields']['name']['errors'] ? 'form__item--invalid' : ''; ?>">
+        <div class="form__item <?= $fields['name']['errors'] ? 'form__item--invalid' : ''; ?>">
             <label for="name">Имя*</label>
             <input id="name" type="text" name="name" placeholder="Введите имя"
-                   value="<?= $data['fields']['name']['value'] ? $data['fields']['name']['value'] : ''; ?>">
+                   value="<?= $fields['name']['value'] ? htmlspecialchars($fields['name']['value']) : ''; ?>">
 
             <?php
-            if (isset($data['fields']['name']['errors'])) {
-                foreach ($data['fields']['name']['errors'] as $error) { ?>
+            if ($fields['name']['errors']) {
+                foreach ($fields['name']['errors'] as $error) { ?>
 
                     <span class="form__error">
-                            <?=$error;?>
+                            <?=htmlspecialchars($error);?>
                         </span>
 
                 <?php }
@@ -62,18 +62,18 @@
 
         </div>
 
-        <div class="form__item <?= $data['fields']['contacts']['errors'] ? 'form__item--invalid' : ''; ?>">
+        <div class="form__item <?= $fields['contacts']['errors'] ? 'form__item--invalid' : ''; ?>">
             <label for="message">Контактные данные*</label>
             <textarea id="contacts" name="contacts" placeholder="Напишите как с вами связаться"><?=
-                $data['fields']['contacts']['value'] ? $data['fields']['contacts']['value'] : '';
+                $fields['contacts']['value'] ? htmlspecialchars($fields['contacts']['value']) : '';
                 ?></textarea>
 
             <?php
-            if (isset($data['fields']['contacts']['errors'])) {
-                foreach ($data['fields']['contacts']['errors'] as $error) { ?>
+            if ($fields['contacts']['errors']) {
+                foreach ($fields['contacts']['errors'] as $error) { ?>
 
                     <span class="form__error">
-                            <?=$error;?>
+                            <?=htmlspecialchars($error);?>
                         </span>
 
                 <?php }
@@ -96,7 +96,7 @@
                 </label>
             </div>
             <span style="color: red;">
-                <?=isset($data['file']['error']) ? $data['file']['error'] : '';?>
+                <?=$file['error'] ? $file['error'] : '';?>
             </span>
         </div>
 

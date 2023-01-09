@@ -11,9 +11,9 @@ class StakeRecord extends BaseRecord
     public $created_at_Field = null;
     public $updated_at_Field = null;
 
-    function __construct(string $dbClassName,array $recordFields,bool $isNewRecord = false)
+    public function __construct(string $dbClassName, array $recordFields, bool $isNewRecord = false)
     {
         $this->tableName = 'stakes';
-        parent::__construct($dbClassName,$recordFields,$isNewRecord);
+        parent::__construct($dbClassName, $recordFields, $isNewRecord);
     }
 }
